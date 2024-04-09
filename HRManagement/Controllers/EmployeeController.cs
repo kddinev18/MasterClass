@@ -23,5 +23,11 @@ namespace HRManagement.Controllers
         {
             return Ok(_employeeService.GetAll(pageNumber, pageSize));
         }
+
+        [HttpGet]
+        public IActionResult Get([FromQuery] int id)
+        {
+            return Ok(_employeeService.Get(id));
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace HRManagement.Infrastructure.Contracts
 {
     public interface IEmployeeService : IBaseService
     {
+        EmployeeDTO Get(int id);
         IQueryable<EmployeeDTO> GetAll(int pageNumber, int pageSize);
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using HRManagement.DAL.Repositories.Base;
 using HRManagement.Domain.DTO;
 using HRManagement.DAL.Data.Entities;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace HRManagement.Infrastructure.Services
 {
@@ -22,9 +23,9 @@ namespace HRManagement.Infrastructure.Services
         public IQueryable<EmployeeDTO> GetAll(int pageNumber, int pageSize)
         {
             return _employeeRepository.GetAll()
-                .Skip((pageNumber-1)*pageSize)
+                .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(x=>new EmployeeDTO()
+                .Select(x => new EmployeeDTO()
                 {
                     Id = x.Id,
                     FirstName = x.FirstName,
@@ -35,6 +36,23 @@ namespace HRManagement.Infrastructure.Services
                     JobTitle = x.Job.Title,
                     DepartmentName = x.Department.Name,
                 });
+        }
+
+        public EmployeeDTO Get(int id)
+        {
+            Employee employee = _employeeRepository.GetById(id);
+
+            return new EmployeeDTO()
+            {
+                Id = employee.Id,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Email = employee.Email,
+                PhoneNumber = employee.PhoneNumber,
+                ManagerName = employee.Manager != null ? employee.Manager.FirstName + " " + employee.Manager.LastName : "",
+                JobTitle = employee.Job.Title,
+                DepartmentName = employee.Department.Name,
+            };
         }
     }
 }

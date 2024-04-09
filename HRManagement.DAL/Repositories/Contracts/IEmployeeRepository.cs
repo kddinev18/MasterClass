@@ -9,6 +9,5 @@ namespace HRManagement.DAL.Repositories.Contracts
 {
     public interface IEmployeeRepository : IGenericRepository<Employee>
     {
-        public int? GetEmployeeManagerId(int id);
     }
 }

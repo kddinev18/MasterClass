@@ -15,10 +15,5 @@ namespace HRManagement.DAL.Repositories
         public EmployeeRepository(HrManagementContext db) : base(db)
         {
         }
-
-        public int? GetEmployeeManagerId(int id)
-        {
-            return GetById(id).ManagerId;
-        }
     }
 }
