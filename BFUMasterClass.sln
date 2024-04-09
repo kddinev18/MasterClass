@@ -5,7 +5,11 @@ VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement", "HRManagement\HRManagement.csproj", "{43099FE7-3F3E-4A06-B231-CDECC48F4BB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.DAL", "HRManagement.DAL\HRManagement.DAL.csproj", "{FB45703B-E299-4743-834B-C3F4F9F45D79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "HRManagement.DAL\DataAccess.csproj", "{FB45703B-E299-4743-834B-C3F4F9F45D79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{AD1E1E2D-F584-458F-B9F6-BC4D9236C9E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{21A2ABF5-AB3F-4B2F-BDA2-59D6FA82053A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{FB45703B-E299-4743-834B-C3F4F9F45D79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB45703B-E299-4743-834B-C3F4F9F45D79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB45703B-E299-4743-834B-C3F4F9F45D79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD1E1E2D-F584-458F-B9F6-BC4D9236C9E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD1E1E2D-F584-458F-B9F6-BC4D9236C9E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD1E1E2D-F584-458F-B9F6-BC4D9236C9E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD1E1E2D-F584-458F-B9F6-BC4D9236C9E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21A2ABF5-AB3F-4B2F-BDA2-59D6FA82053A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21A2ABF5-AB3F-4B2F-BDA2-59D6FA82053A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21A2ABF5-AB3F-4B2F-BDA2-59D6FA82053A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21A2ABF5-AB3F-4B2F-BDA2-59D6FA82053A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

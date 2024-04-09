@@ -2,7 +2,9 @@
 using HRManagement.DAL.Repositories;
 using HRManagement.DAL.Repositories.Base;
 using HRManagement.DAL.Repositories.Contracts;
+using HRManagement.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
+using HRManagement.Infrastructure.Contracts;
 
 namespace HRManagement.Controllers
 {
@@ -10,30 +12,16 @@ namespace HRManagement.Controllers
     [Route("api/[controller]/[action]")]
     public class EmployeeController : Controller
     {
-        private IEmployeeRepository _employeeRepository;
-        public EmployeeController(UnitOfWork unitOfWork)
+        private IEmployeeService _employeeService;
+        public EmployeeController(IEmployeeService employeeService)
         {
-            _employeeRepository = unitOfWork.GetRepository<Employee>() as IEmployeeRepository;
+            _employeeService = employeeService;
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] int page, [FromQuery] int pageSize)
+        public IActionResult GetAll([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
-            return Ok(_employeeRepository.GetAll().Skip((page-1)*pageSize).Take(pageSize));
-        }
-
-
-        [HttpPost]
-        public IActionResult Create([FromBody] Employee employee)
-        {
-            return Ok(_employeeRepository.AddOrUpdate(employee));
-        }
-
-
-        [HttpGet]
-        public IActionResult GetEmployeeManagerId([FromQuery] int id)
-        {
-            return Ok(_employeeRepository.GetEmployeeManagerId(id));
+            return Ok(_employeeService.GetAll(pageNumber, pageSize));
         }
     }
 }
