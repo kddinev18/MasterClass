@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\HRManagement.DAL\DataAccess.csproj" />
+    <ProjectReference Include="..\HRManagement.DataAccess\HRManagement.DataAccess.csproj" />
+    <ProjectReference Include="..\HRManagement.Domain\HRManagement.Domain.csproj" />
   </ItemGroup>
 
 </Project>

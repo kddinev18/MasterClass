@@ -4,7 +4,7 @@ using HRManagement.DAL.Repositories.Base;
 using HRManagement.Infrastructure.Contracts;
 using System.Reflection;
 
-namespace HRManagement
+namespace HRManagement.API
 {
     public class Program
     {

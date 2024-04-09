@@ -6,7 +6,7 @@ using HRManagement.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using HRManagement.Infrastructure.Contracts;
 
-namespace HRManagement.Controllers
+namespace HRManagement.Controllers.API
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
