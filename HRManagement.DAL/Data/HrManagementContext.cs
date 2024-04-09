@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using HRManagement.DAL.Models.Entities;
+using HRManagement.DAL.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace HRManagement.DAL.Models
+namespace HRManagement.DAL.Data
 {
     public partial class HrManagementContext : DbContext
     {
@@ -38,7 +38,6 @@ namespace HRManagement.DAL.Models
                 entity.HasOne(d => d.Manager)
                     .WithMany(p => p.Departments)
                     .HasForeignKey(d => d.ManagerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Departments_Employees");
             });
 
@@ -61,7 +60,6 @@ namespace HRManagement.DAL.Models
                 entity.HasOne(d => d.Manager)
                     .WithMany(p => p.InverseManager)
                     .HasForeignKey(d => d.ManagerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Employees_Employees");
             });
 

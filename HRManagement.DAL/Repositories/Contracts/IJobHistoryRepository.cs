@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace HRManagement.DAL.Repositories.Contracts
 {
-    public interface IEmployeeRepository : IGenericRepository<Employee>
+    public interface IJobHistoryRepository : IGenericRepository<JobHistory>
     {
-        public int? GetEmployeeManagerId(int id);
     }
 }

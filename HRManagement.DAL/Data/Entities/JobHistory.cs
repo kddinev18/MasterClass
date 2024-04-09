@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HRManagement.DAL.Models.Contracts;
+using HRManagement.DAL.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace HRManagement.DAL.Models.Entities
+namespace HRManagement.DAL.Data.Entities
 {
     [Table("JobHistory")]
     public partial class JobHistory : IEntity

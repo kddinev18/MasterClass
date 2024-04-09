@@ -1,4 +1,4 @@
-﻿using HRManagement.DAL.Models.Contracts;
+﻿using HRManagement.DAL.Data.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

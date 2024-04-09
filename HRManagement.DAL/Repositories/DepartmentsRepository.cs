@@ -10,15 +10,10 @@ using System.Threading.Tasks;
 
 namespace HRManagement.DAL.Repositories
 {
-    public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
+    public class DepartmentsRepository : BaseRepository<Department>, IDepartmentRepository
     {
-        public EmployeeRepository(HrManagementContext db) : base(db)
+        public DepartmentsRepository(HrManagementContext db) : base(db)
         {
-        }
-
-        public int? GetEmployeeManagerId(int id)
-        {
-            return GetById(id).ManagerId;
         }
     }
 }

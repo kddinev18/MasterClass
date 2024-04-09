@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HRManagement.DAL.Models.Contracts;
+using HRManagement.DAL.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace HRManagement.DAL.Models.Entities
+namespace HRManagement.DAL.Data.Entities
 {
     public partial class Employee : IEntity
     {
@@ -29,7 +29,7 @@ namespace HRManagement.DAL.Models.Entities
         public string PhoneNumber { get; set; } = null!;
         public DateTime HireDate { get; set; }
         public int JobId { get; set; }
-        public int ManagerId { get; set; }
+        public int? ManagerId { get; set; }
         public int DepartmentId { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
@@ -47,7 +47,7 @@ namespace HRManagement.DAL.Models.Entities
         public virtual Job Job { get; set; } = null!;
         [ForeignKey(nameof(ManagerId))]
         [InverseProperty(nameof(Employee.InverseManager))]
-        public virtual Employee Manager { get; set; } = null!;
+        public virtual Employee? Manager { get; set; }
         [InverseProperty("Manager")]
         public virtual ICollection<Department> Departments { get; set; }
         [InverseProperty(nameof(Employee.Manager))]

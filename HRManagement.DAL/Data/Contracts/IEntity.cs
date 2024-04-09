@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HRManagement.DAL.Models.Contracts
+namespace HRManagement.DAL.Data.Contracts
 {
     public interface IEntity
     {

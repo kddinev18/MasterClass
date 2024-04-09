@@ -1,3 +1,4 @@
+using HRManagement.DAL.Data;
 using HRManagement.DAL.Repositories.Base;
 
 namespace HRManagement
@@ -9,6 +10,7 @@ namespace HRManagement
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<HrManagementContext>();
             builder.Services.AddScoped<UnitOfWork>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
