@@ -54,7 +54,7 @@ namespace HRManagement
             }
         }
 
-        public static IEnumerable<Type> FindDerivedInterfaces(Type baseInterface)
+        private static IEnumerable<Type> FindDerivedInterfaces(Type baseInterface)
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(x => x.GetTypes())

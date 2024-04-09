@@ -14,13 +14,9 @@ namespace HRManagement.Infrastructure.Services
     public class EmployeeService : IEmployeeService
     {
         private IEmployeeRepository _employeeRepository;
-        private IJobRepository _jobRepository;
-        private IDepartmentRepository _departmentRepository;
         public EmployeeService(UnitOfWork unitOfWork)
         {
             _employeeRepository = unitOfWork.GetRepository<Employee>() as IEmployeeRepository;
-            _jobRepository = unitOfWork.GetRepository<Job>() as IJobRepository;
-            _departmentRepository = unitOfWork.GetRepository<Department>() as IDepartmentRepository; 
         }
 
         public IQueryable<EmployeeDTO> GetAll(int pageNumber, int pageSize)
@@ -35,9 +31,9 @@ namespace HRManagement.Infrastructure.Services
                     LastName = x.LastName,
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
-                    ManagerName = x.ManagerId.HasValue ? _employeeRepository.GetById(x.ManagerId.Value).FirstName : "",
-                    JobTitle = _jobRepository.GetById(x.JobId).Title,
-                    DepartmentName = _departmentRepository.GetById(x.DepartmentId).Name
+                    ManagerName = x.Manager != null ? x.Manager.FirstName + " " + x.Manager.LastName : "",
+                    JobTitle = x.Job.Title,
+                    DepartmentName = x.Department.Name,
                 });
         }
     }
