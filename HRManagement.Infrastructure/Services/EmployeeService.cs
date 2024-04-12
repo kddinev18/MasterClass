@@ -40,19 +40,22 @@ namespace HRManagement.Infrastructure.Services
 
         public EmployeeDTO Get(int id)
         {
-            Employee employee = _employeeRepository.GetById(id);
-
-            return new EmployeeDTO()
-            {
-                Id = employee.Id,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                Email = employee.Email,
-                PhoneNumber = employee.PhoneNumber,
-                ManagerName = employee.Manager != null ? employee.Manager.FirstName + " " + employee.Manager.LastName : "",
-                JobTitle = employee.Job.Title,
-                DepartmentName = employee.Department.Name,
-            };
+            return _employeeRepository
+                .GetById(id)
+                .Select(employee=>
+                    new EmployeeDTO()
+                    {
+                        Id = employee.Id,
+                        FirstName = employee.FirstName,
+                        LastName = employee.LastName,
+                        Email = employee.Email,
+                        PhoneNumber = employee.PhoneNumber,
+                        ManagerName = employee.Manager != null ? employee.Manager.FirstName + " " + employee.Manager.LastName : "",
+                        JobTitle = employee.Job.Title,
+                        DepartmentName = employee.Department.Name,
+                    }
+                )
+                .First();
         }
     }
 }

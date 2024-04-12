@@ -29,5 +29,12 @@ namespace HRManagement.Controllers.API
         {
             return Ok(_employeeService.Get(id));
         }
+
+        [HttpPost]
+        public IActionResult Add([FromBody] Employee employee)
+        {
+
+            return Ok();
+        }
     }
 }

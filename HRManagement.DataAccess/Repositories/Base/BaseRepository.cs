@@ -26,9 +26,9 @@ namespace HRManagement.DAL.Repositories.Base
             return _entities;
         }
 
-        public virtual TEntity? GetById(int id)
+        public virtual IQueryable<TEntity> GetById(int id)
         {
-            return _entities.Where(x => x.Id == id).FirstOrDefault();
+            return _entities.Where(x => x.Id == id);
         }
 
         public virtual int AddOrUpdate(TEntity entity)

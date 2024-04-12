@@ -11,7 +11,7 @@ namespace HRManagement.DAL.Repositories.Contracts
     {
         public abstract IQueryable<TEntity> GetAll();
 
-        public abstract TEntity? GetById(int id);
+        public abstract IQueryable<TEntity> GetById(int id);
 
         public abstract int AddOrUpdate(TEntity entity);
 
