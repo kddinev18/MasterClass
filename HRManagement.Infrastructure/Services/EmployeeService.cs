@@ -10,15 +10,18 @@ using HRManagement.DAL.Data.Entities;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using HRManagement.Domain.DTO.HrManagement.Request;
 using HRManagement.Domain.DTO.HrManagement.Response;
+using Microsoft.AspNetCore.Identity;
 
 namespace HRManagement.Infrastructure.Services
 {
-    public class EmployeeService : IEmployeeService
+    public class EmployeeService : BaseService, IEmployeeService
     {
         private IEmployeeRepository _employeeRepository;
-        public EmployeeService(UnitOfWork unitOfWork)
+        private IJobRepository _jobRepository;
+        public EmployeeService(UnitOfWork unitOfWork, ICurrentUserService currentUserService) : base(currentUserService)
         {
             _employeeRepository = unitOfWork.GetRepository<Employee>() as IEmployeeRepository;
+            _jobRepository = unitOfWork.GetRepository<Job>() as IJobRepository;
         }
 
         public IQueryable<EmployeeResponseDTO> GetAll(int pageNumber, int pageSize)
@@ -59,24 +62,32 @@ namespace HRManagement.Infrastructure.Services
                 .First();
         }
 
-        public EmployeeResponseDTO Create(int id)
+        public int AddOrUpdate(EmployeeRequestDTO employee)
         {
-            return _employeeRepository
-                .GetById(id)
-                .Select(employee =>
-                    new EmployeeResponseDTO()
-                    {
-                        Id = employee.Id,
-                        FirstName = employee.FirstName,
-                        LastName = employee.LastName,
-                        Email = employee.Email,
-                        PhoneNumber = employee.PhoneNumber,
-                        ManagerName = employee.Manager != null ? employee.Manager.FirstName + " " + employee.Manager.LastName : "",
-                        JobTitle = employee.Job.Title,
-                        DepartmentName = employee.Department.Name,
-                    }
-                )
-                .First();
+            if(!employee.JobExsists)
+            {
+                employee.JobId = _jobRepository.AddOrUpdate(new Job()
+                {
+                    Title = employee.JobTitle
+                }, _currentUserService.User);
+            }
+            return _employeeRepository.AddOrUpdate(new Employee()
+            {
+                Id = employee.Id.HasValue ? employee.Id.Value : 0,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Email = employee.Email,
+                PhoneNumber = employee.PhoneNumber,
+                JobId = employee.JobId.Value,
+                ManagerId = employee.ManagerId,
+                DepartmentId = employee.DepartmentId,
+                HireDate = employee.HireDate
+            }, _currentUserService.User);
+        }
+
+        public int Delete(int id)
+        {
+            return _employeeRepository.Delete(id, _currentUserService.User);
         }
     }
 }

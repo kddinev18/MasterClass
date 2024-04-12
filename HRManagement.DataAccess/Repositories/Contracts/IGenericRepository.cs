@@ -16,6 +16,6 @@ namespace HRManagement.DAL.Repositories.Contracts
 
         public abstract int AddOrUpdate(TEntity entity, IdentityUser User);
 
-        public abstract int Delete(int id);
+        public abstract int Delete(int id, IdentityUser User);
     }
 }

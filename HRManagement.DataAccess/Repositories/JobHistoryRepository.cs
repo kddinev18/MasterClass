@@ -15,5 +15,14 @@ namespace HRManagement.DAL.Repositories
         public JobHistoryRepository(HrManagementContext db) : base(db)
         {
         }
+
+        public override void UpdateEntity(JobHistory oldEntity, JobHistory newEntity)
+        {
+            oldEntity.JobId = newEntity.JobId;
+            oldEntity.StartDate = newEntity.StartDate;
+            oldEntity.EndDate = newEntity.EndDate;
+            oldEntity.EmployeeId = newEntity.EmployeeId;
+            oldEntity.DepartmentId = newEntity.DepartmentId;
+        }
     }
 }

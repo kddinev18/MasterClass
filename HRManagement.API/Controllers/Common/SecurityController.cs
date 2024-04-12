@@ -13,10 +13,10 @@ namespace HRManagement.API.Controllers.Common
 
     [ApiController]
     [Route($"api/Common/[controller]/[action]")]
-    public class SecurityController : Controller
+    public class SecurityController : BaseController
     {
         private readonly IAuthenticationService _authenticationService;
-        public SecurityController(IAuthenticationService authenticationService)
+        public SecurityController(IAuthenticationService authenticationService, ICurrentUserService currentUserService, UserManager<IdentityUser> userManager) : base(currentUserService, userManager)
         {
             _authenticationService = authenticationService;
         }

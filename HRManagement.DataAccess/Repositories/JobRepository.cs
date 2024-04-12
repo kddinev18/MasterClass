@@ -15,5 +15,11 @@ namespace HRManagement.DAL.Repositories
         public JobRepository(HrManagementContext db) : base(db)
         {
         }
+
+        public override void UpdateEntity(Job oldEntity, Job newEntity)
+        {
+            oldEntity.Title = newEntity.Title;
+            oldEntity.Salary = newEntity.Salary;
+        }
     }
 }

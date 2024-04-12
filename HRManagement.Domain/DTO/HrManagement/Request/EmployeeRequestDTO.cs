@@ -18,6 +18,6 @@ namespace HRManagement.Domain.DTO.HrManagement.Request
         public int? JobId { get; set; }
         public string? JobTitle { get; set; }
         public int DepartmentId { get; set; }
-
+        public DateTime HireDate { get; set; }
     }
 }

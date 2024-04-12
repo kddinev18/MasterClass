@@ -15,10 +15,10 @@ namespace HRManagement.API.Controllers.HrManagement
     [ApiController]
     [Route("api/HrManagement/[controller]/[action]")]
     [Authorize(Roles = nameof(Roles.HR))]
-    public class EmployeeController : Controller
+    public class EmployeeController : BaseController
     {
-        private IEmployeeService _employeeService;
-        public EmployeeController(IEmployeeService employeeService)
+        private readonly IEmployeeService _employeeService;
+        public EmployeeController(IEmployeeService employeeService, ICurrentUserService currentUserService, UserManager<IdentityUser> userManager) : base(currentUserService, userManager)
         {
             _employeeService = employeeService;
         }
@@ -36,21 +36,15 @@ namespace HRManagement.API.Controllers.HrManagement
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody] EmployeeRequestDTO employee)
+        public IActionResult AddOrUpdate([FromBody] EmployeeRequestDTO employee)
         {
-            return Ok();
-        }
-
-        [HttpPut]
-        public IActionResult Update([FromBody] EmployeeRequestDTO employee)
-        {
-            return Ok();
+            return Ok(_employeeService.AddOrUpdate(employee));
         }
 
         [HttpDelete]
         public IActionResult Delete([FromQuery] int id)
         {
-            return Ok();
+            return Ok(_employeeService.Delete(id));
         }
     }
 }

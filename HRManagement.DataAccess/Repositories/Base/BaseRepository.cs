@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HRManagement.DAL.Repositories.Base
 {
-    public class BaseRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IEntity
+    public abstract class BaseRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IEntity
     {
         protected readonly HrManagementContext _db;
         protected readonly DbSet<TEntity> _entities;
@@ -32,7 +32,7 @@ namespace HRManagement.DAL.Repositories.Base
             return _entities.Where(x => x.Id == id);
         }
 
-        public virtual int AddOrUpdate(TEntity entity, IdentityUser User)
+        public virtual int AddOrUpdate(TEntity entity, IdentityUser user)
         {
             if (entity == null)
             {
@@ -42,22 +42,25 @@ namespace HRManagement.DAL.Repositories.Base
             if (entity.Id == 0)
             {
                 entity.CreatedOn = DateTime.Now;
-                entity.CreatedBy = User.UserName;
+                entity.CreatedBy = user.UserName;
                 _entities.Add(entity);
+                _db.SaveChanges();
+
+                return entity.Id;
             }
             else
             {
-                entity.UpdatedOn = DateTime.Now;
-                entity.UpdatedBy = User.UserName;
-                _entities.Update(entity);
+                TEntity dbEntity = GetById(entity.Id).First();
+                UpdateEntity(dbEntity, entity);
+                dbEntity.UpdatedOn = DateTime.Now;
+                dbEntity.UpdatedBy = user.UserName;
+                return _db.SaveChanges();
             }
-
-            return _db.SaveChanges();
         }
 
-        public virtual int Delete(int id)
+        public virtual int Delete(int id, IdentityUser user)
         {
-            TEntity entity = _entities.Where(x => x.Id == id).FirstOrDefault();
+            TEntity entity = GetById(id).FirstOrDefault();
 
             if (entity == null)
             {
@@ -66,9 +69,13 @@ namespace HRManagement.DAL.Repositories.Base
 
             entity.IsActive = false;
             entity.UpdatedOn = DateTime.Now;
-            entity.UpdatedBy = "SYSTEM";
+            entity.UpdatedBy = user.UserName;
+            DeleteAdditionalDependacies();
 
             return _db.SaveChanges();
         }
+
+        public virtual void DeleteAdditionalDependacies() { }
+        public abstract void UpdateEntity(TEntity oldEntity, TEntity newEntity);
     }
 }
