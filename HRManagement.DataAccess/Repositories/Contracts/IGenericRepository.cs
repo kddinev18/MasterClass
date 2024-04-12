@@ -1,4 +1,5 @@
 ﻿using HRManagement.DAL.Data.Contracts;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace HRManagement.DAL.Repositories.Contracts
 
         public abstract IQueryable<TEntity> GetById(int id);
 
-        public abstract int AddOrUpdate(TEntity entity);
+        public abstract int AddOrUpdate(TEntity entity, IdentityUser User);
 
         public abstract int Delete(int id);
     }

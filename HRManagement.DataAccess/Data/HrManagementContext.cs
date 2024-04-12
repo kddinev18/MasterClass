@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using HRManagement.DAL.Data.Entities;
+using HRManagement.Domain.Constants;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -76,6 +80,7 @@ namespace HRManagement.DAL.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_JobHistory_Jobs");
             });
+            modelBuilder.SeedRoles();
 
             OnModelCreatingPartial(modelBuilder);
         }

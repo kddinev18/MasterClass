@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace HRManagement.DAL.Repositories.Base
 {
     public class BaseRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IEntity
     {
-        protected HrManagementContext _db;
-        protected DbSet<TEntity> _entities;
+        protected readonly HrManagementContext _db;
+        protected readonly DbSet<TEntity> _entities;
         public BaseRepository(HrManagementContext db)
         {
             _db = db;
@@ -31,7 +32,7 @@ namespace HRManagement.DAL.Repositories.Base
             return _entities.Where(x => x.Id == id);
         }
 
-        public virtual int AddOrUpdate(TEntity entity)
+        public virtual int AddOrUpdate(TEntity entity, IdentityUser User)
         {
             if (entity == null)
             {
@@ -41,13 +42,13 @@ namespace HRManagement.DAL.Repositories.Base
             if (entity.Id == 0)
             {
                 entity.CreatedOn = DateTime.Now;
-                entity.CreatedBy = "SYSTEM";
+                entity.CreatedBy = User.UserName;
                 _entities.Add(entity);
             }
             else
             {
                 entity.UpdatedOn = DateTime.Now;
-                entity.UpdatedBy = "SYSTEM";
+                entity.UpdatedBy = User.UserName;
                 _entities.Update(entity);
             }
 

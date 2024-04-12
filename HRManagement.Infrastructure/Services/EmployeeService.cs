@@ -6,9 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HRManagement.DAL.Repositories.Base;
-using HRManagement.Domain.DTO;
 using HRManagement.DAL.Data.Entities;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using HRManagement.Domain.DTO.HrManagement.Request;
+using HRManagement.Domain.DTO.HrManagement.Response;
 
 namespace HRManagement.Infrastructure.Services
 {
@@ -20,30 +21,50 @@ namespace HRManagement.Infrastructure.Services
             _employeeRepository = unitOfWork.GetRepository<Employee>() as IEmployeeRepository;
         }
 
-        public IQueryable<EmployeeDTO> GetAll(int pageNumber, int pageSize)
+        public IQueryable<EmployeeResponseDTO> GetAll(int pageNumber, int pageSize)
         {
             return _employeeRepository.GetAll()
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(x => new EmployeeDTO()
+                .Select(x => new EmployeeResponseDTO()
                 {
                     Id = x.Id,
                     FirstName = x.FirstName,
                     LastName = x.LastName,
                     Email = x.Email,
                     PhoneNumber = x.PhoneNumber,
-                    ManagerName = x.Manager != null ? x.Manager.FirstName + " " + x.Manager.LastName : "",
+                    ManagerName = x.Manager != null ? x.Manager.FirstName + " " + x.Manager.LastName : null,
                     JobTitle = x.Job.Title,
                     DepartmentName = x.Department.Name,
                 });
         }
 
-        public EmployeeDTO Get(int id)
+        public EmployeeResponseDTO Get(int id)
         {
             return _employeeRepository
                 .GetById(id)
                 .Select(employee=>
-                    new EmployeeDTO()
+                    new EmployeeResponseDTO()
+                    {
+                        Id = employee.Id,
+                        FirstName = employee.FirstName,
+                        LastName = employee.LastName,
+                        Email = employee.Email,
+                        PhoneNumber = employee.PhoneNumber,
+                        ManagerName = employee.Manager != null ? employee.Manager.FirstName + " " + employee.Manager.LastName : null,
+                        JobTitle = employee.Job.Title,
+                        DepartmentName = employee.Department.Name,
+                    }
+                )
+                .First();
+        }
+
+        public EmployeeResponseDTO Create(int id)
+        {
+            return _employeeRepository
+                .GetById(id)
+                .Select(employee =>
+                    new EmployeeResponseDTO()
                     {
                         Id = employee.Id,
                         FirstName = employee.FirstName,

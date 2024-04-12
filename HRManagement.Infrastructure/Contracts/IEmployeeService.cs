@@ -1,4 +1,4 @@
-﻿using HRManagement.Domain.DTO;
+﻿using HRManagement.Domain.DTO.HrManagement.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace HRManagement.Infrastructure.Contracts
 {
     public interface IEmployeeService : IBaseService
     {
-        EmployeeDTO Get(int id);
-        IQueryable<EmployeeDTO> GetAll(int pageNumber, int pageSize);
+        EmployeeResponseDTO Get(int id);
+        IQueryable<EmployeeResponseDTO> GetAll(int pageNumber, int pageSize);
     }
 }

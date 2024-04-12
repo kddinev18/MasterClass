@@ -11,9 +11,9 @@ namespace HRManagement.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            ServiceConfigurator.
-                        // Add services to the container.
-                        AddServices(builder);
+            builder.AddContext();
+            builder.AddIdentity();
+            builder.AddServices();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +30,7 @@ namespace HRManagement.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

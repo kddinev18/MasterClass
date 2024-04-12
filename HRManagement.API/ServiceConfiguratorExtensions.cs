@@ -1,20 +1,45 @@
 ﻿using HRManagement.DAL.Data;
 using HRManagement.DAL.Repositories.Base;
+using HRManagement.Domain.Constants;
 using HRManagement.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace HRManagement.API
 {
-    public static class ServiceConfigurator
+    public static class ServiceConfiguratorExtensions
     {
         public static void AddContext(this WebApplicationBuilder builder)
         {
             builder.Services.AddDbContext<HrManagementContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+        }
+
+        public static void AddIdentity(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddIdentityCore<IdentityUser>()
+                .AddRoles<IdentityRole>()
+                .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("HrManagement")
+                .AddEntityFrameworkStores<HrManagementContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration[Jwt.Issuer],
+                    ValidAudience = builder.Configuration[Jwt.Audience],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration[Jwt.Key]))
+                };
             });
         }
 

@@ -5,11 +5,16 @@ using HRManagement.DAL.Repositories.Contracts;
 using HRManagement.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using HRManagement.Infrastructure.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using HRManagement.Domain.Constants;
+using Microsoft.AspNetCore.Identity;
+using HRManagement.Domain.DTO.HrManagement.Request;
 
-namespace HRManagement.Controllers.API
+namespace HRManagement.API.Controllers.HrManagement
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/HrManagement/[controller]/[action]")]
+    [Authorize(Roles = nameof(Roles.HR))]
     public class EmployeeController : Controller
     {
         private IEmployeeService _employeeService;
@@ -31,9 +36,20 @@ namespace HRManagement.Controllers.API
         }
 
         [HttpPost]
-        public IActionResult Add([FromBody] Employee employee)
+        public IActionResult Add([FromBody] EmployeeRequestDTO employee)
         {
+            return Ok();
+        }
 
+        [HttpPut]
+        public IActionResult Update([FromBody] EmployeeRequestDTO employee)
+        {
+            return Ok();
+        }
+
+        [HttpDelete]
+        public IActionResult Delete([FromQuery] int id)
+        {
             return Ok();
         }
     }
