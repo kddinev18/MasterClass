@@ -20,7 +20,7 @@ namespace HRManagement.API.Controllers.HrManagement
             _employeeService = employeeService;
         }
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult GetAll([FromBody] BaseFilter<EmployeeFilters> filters)
         {
             return Ok(_employeeService.GetAll(filters));

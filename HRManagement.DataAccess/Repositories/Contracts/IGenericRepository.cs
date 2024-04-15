@@ -8,7 +8,8 @@ namespace HRManagement.DAL.Repositories.Contracts
 
         public abstract IQueryable<TEntity> GetById(int id);
 
-        public abstract int AddOrUpdate(TEntity entity, IdentityUser User);
+        public abstract int AddOrUpdate(TEntity entity, IdentityUser user);
+        public abstract TEntity GetAddOrUpdate(TEntity entity, IdentityUser user);
 
         public abstract int Delete(int id, IdentityUser User);
     }

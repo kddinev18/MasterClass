@@ -12,13 +12,13 @@ namespace HRManagement.Infrastructure.Services
     public class EmployeeService : BaseService, IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IJobRepository _jobRepository;
         private readonly IJobHistoryRepository _jobHistoryRepository;
+        private readonly UnitOfWork _unitOfWork;
         public EmployeeService(UnitOfWork unitOfWork, ICurrentUserService currentUserService) : base(currentUserService)
         {
             _employeeRepository = unitOfWork.GetRepository<Employee>() as IEmployeeRepository;
-            _jobRepository = unitOfWork.GetRepository<Job>() as IJobRepository;
             _jobHistoryRepository = unitOfWork.GetRepository<JobHistory>() as IJobHistoryRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public IQueryable<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters)
@@ -34,7 +34,10 @@ namespace HRManagement.Infrastructure.Services
                     ManagerName = x.Manager != null ? x.Manager.FirstName + " " + x.Manager.LastName : null,
                     JobTitle = x.Job.Title,
                     DepartmentName = x.Department.Name,
-                    PreviousJobs = _jobHistoryRepository.GetAll().Where(j => j.EmployeeId == x.Id).Select(j => j.Job.Title).ToList()
+                    PreviousJobs = _jobHistoryRepository.GetAll()
+                        .Where(j => j.EmployeeId == x.Id && j.EndDate.HasValue)
+                        .Select(j => j.Job.Title)
+                        .ToList()
                 });
         }
 
@@ -60,7 +63,7 @@ namespace HRManagement.Infrastructure.Services
 
         public int AddOrUpdate(EmployeeRequestDTO employee)
         {
-            return _employeeRepository.AddOrUpdate(new Employee()
+            Employee dbEmployee = _employeeRepository.GetAddOrUpdate(new Employee()
             {
                 Id = employee.Id.HasValue ? employee.Id.Value : 0,
                 FirstName = employee.FirstName,
@@ -72,6 +75,15 @@ namespace HRManagement.Infrastructure.Services
                 DepartmentId = employee.DepartmentId,
                 HireDate = employee.HireDate
             }, _currentUserService.User);
+
+            return _jobHistoryRepository.AddOrUpdate(new JobHistory()
+            {
+                EmployeeId = dbEmployee.Id,
+                JobId = dbEmployee.JobId,
+                StartDate = DateTime.Now,
+                DepartmentId = dbEmployee.DepartmentId,
+                EndDate = null
+            }, _currentUserService.User);
         }
 
         public int Delete(int id)
@@ -82,12 +94,12 @@ namespace HRManagement.Infrastructure.Services
         public int Promote(PromoteDTO promote)
         {
             JobHistory oldJob = _jobHistoryRepository.GetAll()
-                .Where(j => j.EmployeeId == promote.EmployeeId && j.JobId == promote.OldJobId)
+                .Where(j => j.EmployeeId == promote.EmployeeId && !j.EndDate.HasValue)
                 .First();
             oldJob.EndDate = DateTime.Now;
             _jobHistoryRepository.AddOrUpdate(oldJob, _currentUserService.User);
 
-            return _jobHistoryRepository.AddOrUpdate(new JobHistory()
+            _jobHistoryRepository.AddOrUpdate(new JobHistory()
             {
                 EmployeeId = promote.EmployeeId,
                 JobId = promote.NewJobId,
@@ -95,6 +107,11 @@ namespace HRManagement.Infrastructure.Services
                 DepartmentId = promote.NewDepartment.HasValue ? promote.NewDepartment.Value : oldJob.DepartmentId,
                 EndDate = null
             }, _currentUserService.User);
+
+            Employee dbEmployee = _employeeRepository.GetById(promote.EmployeeId).First();
+            dbEmployee.JobId = promote.NewJobId;
+
+            return _employeeRepository.AddOrUpdate(dbEmployee, _currentUserService.User);
         }
     }
 }

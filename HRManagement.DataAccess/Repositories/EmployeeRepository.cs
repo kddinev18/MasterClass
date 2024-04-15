@@ -33,7 +33,7 @@ namespace HRManagement.DAL.Repositories
 
             if (filters.Filters == null)
             {
-                return query;
+                return PageResult(query, filters);
             }
 
             EmployeeFilters employeeFilters = filters.Filters;
@@ -90,6 +90,11 @@ namespace HRManagement.DAL.Repositories
                 }
             }
 
+            return PageResult(query, filters);
+        }
+
+        private IQueryable<Employee> PageResult(IQueryable<Employee> query, BaseFilter<EmployeeFilters> filters)
+        {
             return query
                 .Skip((filters.Page - 1) * filters.PageSize)
                 .Take(filters.PageSize);
