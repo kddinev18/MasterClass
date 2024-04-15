@@ -2,11 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SecurityService } from '../security/security.service';
 import { UserModel } from '../security/user-model';
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-nav-bar',
@@ -28,6 +31,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
   user?: UserModel;
 
   constructor(
+    private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
+    private _router: Router,
     private _securityService: SecurityService
   ) { }
 
@@ -40,7 +46,21 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this._securityService.logout();
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Logout',
+        message: 'Are you sure you want to logout?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this._securityService.logout();
+        this._snackbar.open("You have been logged out", "Okay");
+        this._router.navigate(['/login']);
+      }
+    });
   }
 
   ngOnDestroy(): void {
