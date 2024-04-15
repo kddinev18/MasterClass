@@ -1,13 +1,10 @@
 ﻿using HRManagement.DAL.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HRManagement.Domain.Filters;
 
 namespace HRManagement.DAL.Repositories.Contracts
 {
     public interface IEmployeeRepository : IGenericRepository<Employee>
     {
+        IQueryable<Employee> ApplyFilters(IQueryable<Employee> query, EmployeeFilters? filters);
     }
 }

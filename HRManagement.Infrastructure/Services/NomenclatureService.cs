@@ -1,24 +1,20 @@
 ﻿using HRManagement.DAL.Data.Entities;
 using HRManagement.DAL.Repositories.Base;
-using HRManagement.DAL.Repositories.Contracts;
 using HRManagement.Domain.DTO.Common;
 using HRManagement.Infrastructure.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HRManagement.Infrastructure.Services
 {
     public class NomenclatureService : BaseService, INomenclatureService
     {
-        private IJobRepository _jobRepository;
-        private IDepartmentRepository _departmentRepository;
+        private readonly BaseRepository<Job> _jobRepository;
+        private readonly BaseRepository<Department> _departmentRepository;
+        private readonly BaseRepository<Employee> _employeeRepository;
         public NomenclatureService(UnitOfWork unitOfWork, ICurrentUserService currentUserService) : base(currentUserService)
         {
-            _jobRepository = unitOfWork.GetRepository<Job>() as IJobRepository;
-            _departmentRepository = unitOfWork.GetRepository<Job>() as IDepartmentRepository;
+            _jobRepository = unitOfWork.GetRepository<Job>(true);
+            _departmentRepository = unitOfWork.GetRepository<Department>(true);
+            _employeeRepository = unitOfWork.GetRepository<Employee>(true);
         }
 
         public IQueryable<NomenclatureDTO<int>> GetJobs()
@@ -27,7 +23,8 @@ namespace HRManagement.Infrastructure.Services
                 .Select(x =>
                     new NomenclatureDTO<int>()
                     {
-                        Code = x.Id,
+                        Id = x.Id,
+                        Code = x.Title.ToUpper(),
                         Value = x.Title
                     }
                 );
@@ -39,8 +36,22 @@ namespace HRManagement.Infrastructure.Services
                 .Select(x =>
                     new NomenclatureDTO<int>()
                     {
-                        Code = x.Id,
+                        Id = x.Id,
+                        Code = x.Name.ToUpper(),
                         Value = x.Name
+                    }
+                );
+        }
+
+        public IQueryable<NomenclatureDTO<int>> GetManagers()
+        {
+            return _employeeRepository.GetAll()
+                .Select(x =>
+                    new NomenclatureDTO<int>()
+                    {
+                        Id = x.Id,
+                        Code = x.Email.ToUpper(),
+                        Value = x.FirstName + " " + x.LastName
                     }
                 );
         }

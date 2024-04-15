@@ -1,34 +1,32 @@
-﻿using HRManagement.DAL.Repositories.Contracts;
-using HRManagement.Infrastructure.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HRManagement.DAL.Data.Entities;
 using HRManagement.DAL.Repositories.Base;
-using HRManagement.DAL.Data.Entities;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using HRManagement.DAL.Repositories.Contracts;
 using HRManagement.Domain.DTO.HrManagement.Request;
 using HRManagement.Domain.DTO.HrManagement.Response;
-using Microsoft.AspNetCore.Identity;
+using HRManagement.Domain.Filters;
+using HRManagement.Domain.Filters.Base;
+using HRManagement.Infrastructure.Contracts;
 
 namespace HRManagement.Infrastructure.Services
 {
     public class EmployeeService : BaseService, IEmployeeService
     {
-        private IEmployeeRepository _employeeRepository;
-        private IJobRepository _jobRepository;
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IJobRepository _jobRepository;
         public EmployeeService(UnitOfWork unitOfWork, ICurrentUserService currentUserService) : base(currentUserService)
         {
             _employeeRepository = unitOfWork.GetRepository<Employee>() as IEmployeeRepository;
             _jobRepository = unitOfWork.GetRepository<Job>() as IJobRepository;
         }
 
-        public IQueryable<EmployeeResponseDTO> GetAll(int pageNumber, int pageSize)
+        public IQueryable<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters)
         {
-            return _employeeRepository.GetAll()
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+            return _employeeRepository.ApplyFilters(
+                    _employeeRepository.GetAll()
+                    .Skip((filters.Page - 1) * filters.PageSize)
+                    .Take(filters.PageSize),
+                    filters.Filters
+                )
                 .Select(x => new EmployeeResponseDTO()
                 {
                     Id = x.Id,
@@ -46,7 +44,7 @@ namespace HRManagement.Infrastructure.Services
         {
             return _employeeRepository
                 .GetById(id)
-                .Select(employee=>
+                .Select(employee =>
                     new EmployeeResponseDTO()
                     {
                         Id = employee.Id,
@@ -64,7 +62,7 @@ namespace HRManagement.Infrastructure.Services
 
         public int AddOrUpdate(EmployeeRequestDTO employee)
         {
-            if(!employee.JobExsists)
+            if (!employee.JobExsists)
             {
                 employee.JobId = _jobRepository.AddOrUpdate(new Job()
                 {
