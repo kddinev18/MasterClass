@@ -4,6 +4,7 @@ using HRManagement.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRManagement.DataAccess.Migrations
 {
     [DbContext(typeof(HrManagementContext))]
-    partial class HrManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20240415083731_Make EndDate in JobHistory nullable")]
+    partial class MakeEndDateinJobHistorynullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

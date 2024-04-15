@@ -11,5 +11,6 @@ namespace HRManagement.Infrastructure.Contracts
         int Delete(int id);
         EmployeeResponseDTO Get(int id);
         IQueryable<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters);
+        int Promote(PromoteDTO promote);
     }
 }

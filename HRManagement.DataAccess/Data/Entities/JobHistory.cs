@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using HRManagement.DAL.Data.Contracts;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HRManagement.DAL.Data.Contracts;
-using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.DAL.Data.Entities
 {
@@ -13,7 +10,7 @@ namespace HRManagement.DAL.Data.Entities
         [Key]
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public int JobId { get; set; }
         public int DepartmentId { get; set; }
         public int EmployeeId { get; set; }

@@ -43,5 +43,11 @@ namespace HRManagement.API.Controllers.HrManagement
         {
             return Ok(_employeeService.Delete(id));
         }
+
+        [HttpPost]
+        public IActionResult PromoteEmployee([FromBody] PromoteDTO promote)
+        {
+            return Ok(_employeeService.Promote(promote));
+        }
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HRManagement.Domain.DTO.HrManagement.Response
+﻿namespace HRManagement.Domain.DTO.HrManagement.Response
 {
     public class EmployeeResponseDTO
     {
@@ -16,5 +10,6 @@ namespace HRManagement.Domain.DTO.HrManagement.Response
         public string? ManagerName { get; set; }
         public string JobTitle { get; set; } = null!;
         public string DepartmentName { get; set; } = null!;
+        public List<string> PreviousJobs { get; set; } = new List<string>();
     }
 }
