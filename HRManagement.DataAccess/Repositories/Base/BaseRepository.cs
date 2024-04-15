@@ -1,14 +1,8 @@
-﻿using HRManagement.DAL.Data.Contracts;
-using HRManagement.DAL.Data;
+﻿using HRManagement.DAL.Data;
+using HRManagement.DAL.Data.Contracts;
 using HRManagement.DAL.Repositories.Contracts;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.DAL.Repositories.Base
 {
@@ -34,11 +28,6 @@ namespace HRManagement.DAL.Repositories.Base
 
         public virtual int AddOrUpdate(TEntity entity, IdentityUser user)
         {
-            if (entity == null)
-            {
-                return 0;
-            }
-
             if (entity.Id == 0)
             {
                 entity.CreatedOn = DateTime.Now;
@@ -55,6 +44,27 @@ namespace HRManagement.DAL.Repositories.Base
                 dbEntity.UpdatedOn = DateTime.Now;
                 dbEntity.UpdatedBy = user.UserName;
                 return _db.SaveChanges();
+            }
+        }
+
+        public TEntity GetAddOrUpdate(TEntity entity, IdentityUser user)
+        {
+            if (entity.Id == 0)
+            {
+                entity.CreatedOn = DateTime.Now;
+                entity.CreatedBy = user.UserName;
+                _entities.Add(entity);
+                _db.SaveChanges();
+
+                return entity;
+            }
+            else
+            {
+                TEntity dbEntity = GetById(entity.Id).First();
+                UpdateEntity(dbEntity, entity);
+                dbEntity.UpdatedOn = DateTime.Now;
+                dbEntity.UpdatedBy = user.UserName;
+                return dbEntity;
             }
         }
 
@@ -77,5 +87,6 @@ namespace HRManagement.DAL.Repositories.Base
 
         public virtual void DeleteAdditionalDependacies() { }
         public abstract void UpdateEntity(TEntity oldEntity, TEntity newEntity);
+
     }
 }

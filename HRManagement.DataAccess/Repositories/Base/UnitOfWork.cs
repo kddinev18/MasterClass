@@ -6,11 +6,11 @@ namespace HRManagement.DAL.Repositories.Base
 {
     public class UnitOfWork
     {
-        private HrManagementContext _db;
+        public HrManagementContext Db { get; set; }
         private Dictionary<Type, object> _repositoriesMap;
         public UnitOfWork(HrManagementContext db)
         {
-            _db = db;
+            Db = db;
             _repositoriesMap = new Dictionary<Type, object>();
         }
 
@@ -25,7 +25,7 @@ namespace HRManagement.DAL.Repositories.Base
                 .Where(type => type.IsClass && !type.IsAbstract && typeof(BaseRepository<TEntity>).IsAssignableFrom(type)).First();
             ConstructorInfo constructor = repositoryType.GetConstructor(new Type[] { typeof(HrManagementContext) });
 
-            object repositoryInstance = constructor.Invoke(new object[] { _db });
+            object repositoryInstance = constructor.Invoke(new object[] { Db });
             _repositoriesMap.Add(typeof(TEntity), repositoryInstance);
             return repositoryInstance;
         }
@@ -41,7 +41,7 @@ namespace HRManagement.DAL.Repositories.Base
                 .Where(type => type.IsClass && !type.IsAbstract && typeof(BaseRepository<TEntity>).IsAssignableFrom(type)).First();
             ConstructorInfo constructor = repositoryType.GetConstructor(new Type[] { typeof(HrManagementContext) });
 
-            object repositoryInstance = constructor.Invoke(new object[] { _db });
+            object repositoryInstance = constructor.Invoke(new object[] { Db });
             _repositoriesMap.Add(typeof(TEntity), repositoryInstance);
             return repositoryInstance as BaseRepository<TEntity>;
         }
