@@ -63,5 +63,20 @@ namespace HRManagement.API
                 builder.Services.AddScoped(interfaceType, serviceType);
             }
         }
+
+        public static void AddCors(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    config =>
+                    {
+                        config.WithOrigins("http://localhost:4200", "https://localhost:7184")
+                            .AllowAnyHeader()
+                            .WithMethods(HttpMethod.Get.Method, HttpMethod.Post.Method, HttpMethod.Put.Method,
+                                HttpMethod.Delete.Method);
+                    });
+            });
+        }
     }
 }
