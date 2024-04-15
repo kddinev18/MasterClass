@@ -1,9 +1,19 @@
 <mat-toolbar class="flex justify-between" color="primary">
-    <div>
-        <button mat-button routerLink="/employees">Employees</button>
+    <div class="ml-auto">
+        <ng-container *ngIf="!user; else showLogout">
+            <button mat-button routerLinkActive="active" [routerLink]="['login']">Login</button>
+            <button mat-button routerLinkActive="active" [routerLink]="['register']">Register</button>
+        </ng-container>
     </div>
     <div>
-        <button mat-button routerLink="/login">Login</button>
-        <button mat-button routerLink="/register">Register</button>
+        <ng-container *ngIf="user">
+            <button mat-button routerLinkActive="active" [routerLink]="['employees']">Employees</button>
+        </ng-container>
+        <ng-template #showLogout>
+            <div>
+                <span class="text-white text-base hover:font-bold mr-2">Welcome, {{ user!.userName }}</span>
+                <button class="text-base text-blue-200" (click)="logout()">Logout</button>
+            </div>
+        </ng-template>
     </div>
 </mat-toolbar>
