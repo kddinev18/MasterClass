@@ -1,11 +1,7 @@
 ﻿using HRManagement.Domain.DTO.HrManagement.Request;
 using HRManagement.Domain.DTO.HrManagement.Response;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HRManagement.Domain.Filters;
+using HRManagement.Domain.Filters.Base;
 
 namespace HRManagement.Infrastructure.Contracts
 {
@@ -14,6 +10,6 @@ namespace HRManagement.Infrastructure.Contracts
         int AddOrUpdate(EmployeeRequestDTO employee);
         int Delete(int id);
         EmployeeResponseDTO Get(int id);
-        IQueryable<EmployeeResponseDTO> GetAll(int pageNumber, int pageSize);
+        IQueryable<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters);
     }
 }
