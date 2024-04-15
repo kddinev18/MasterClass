@@ -37,7 +37,8 @@ export class LoginComponent {
     private _snackbar: MatSnackBar,
     private _cookieService: CookieService,
     private _router: Router,
-    private _route: ActivatedRoute) {}
+    private _route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this._fb.group({

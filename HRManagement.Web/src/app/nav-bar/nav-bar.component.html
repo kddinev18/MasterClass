@@ -1,13 +1,13 @@
-<mat-toolbar class="flex justify-between" color="primary">
-    <div class="ml-auto">
-        <ng-container *ngIf="!user; else showLogout">
-            <button mat-button routerLinkActive="active" [routerLink]="['login']">Login</button>
-            <button mat-button routerLinkActive="active" [routerLink]="['register']">Register</button>
-        </ng-container>
+<mat-toolbar color="primary" class="flex items-center justify-between flex-wrap p-6 sticky top-0 z-50">
+    <div class="flex gap-x-5 items-center flex-shrink-0">
+        <div class="space-x-4" *ngIf="user">
+            <button mat-button routerLinkActive="active" [routerLink]="['/employees']">Employees</button>
+        </div>
     </div>
-    <div>
-        <ng-container *ngIf="user">
-            <button mat-button routerLinkActive="active" [routerLink]="['employees']">Employees</button>
+    <div class="block flex lg:items-center lg:w-auto">
+        <ng-container *ngIf="!user; else showLogout">
+            <button mat-button routerLinkActive="active" [routerLink]="['/login']">Login</button>
+            <button mat-button routerLinkActive="active" [routerLink]="['/register']">Register</button>
         </ng-container>
         <ng-template #showLogout>
             <div>
@@ -17,3 +17,4 @@
         </ng-template>
     </div>
 </mat-toolbar>
+  
