@@ -21,12 +21,7 @@ namespace HRManagement.Infrastructure.Services
 
         public IQueryable<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters)
         {
-            return _employeeRepository.ApplyFilters(
-                    _employeeRepository.GetAll()
-                    .Skip((filters.Page - 1) * filters.PageSize)
-                    .Take(filters.PageSize),
-                    filters.Filters
-                )
+            return _employeeRepository.GetAllFiltered(filters)
                 .Select(x => new EmployeeResponseDTO()
                 {
                     Id = x.Id,

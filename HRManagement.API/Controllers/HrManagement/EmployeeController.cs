@@ -1,14 +1,11 @@
-﻿using HRManagement.DAL.Data.Entities;
-using HRManagement.DAL.Repositories;
-using HRManagement.DAL.Repositories.Base;
-using HRManagement.DAL.Repositories.Contracts;
-using HRManagement.Infrastructure.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using HRManagement.Domain.Constants;
+using HRManagement.Domain.DTO.HrManagement.Request;
+using HRManagement.Domain.Filters;
+using HRManagement.Domain.Filters.Base;
 using HRManagement.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using HRManagement.Domain.Constants;
 using Microsoft.AspNetCore.Identity;
-using HRManagement.Domain.DTO.HrManagement.Request;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HRManagement.API.Controllers.HrManagement
 {
@@ -24,9 +21,9 @@ namespace HRManagement.API.Controllers.HrManagement
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        public IActionResult GetAll([FromBody] BaseFilter<EmployeeFilters> filters)
         {
-            return Ok(_employeeService.GetAll(pageNumber, pageSize));
+            return Ok(_employeeService.GetAll(filters));
         }
 
         [HttpGet]
