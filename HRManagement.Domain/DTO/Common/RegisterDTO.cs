@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HRManagement.Domain.DTO.Common.Request
+namespace HRManagement.Domain.DTO.Common
 {
     public class RegisterDTO : LogInDTO
     {
