@@ -1,0 +1,38 @@
+<div class="flex items-center justify-center bg-gray-100" style="min-height: calc(100vh - 78px);">
+    <div class="p-6 m-4 bg-white rounded shadow-md w-96">
+      <h1 class="text-2xl text-center font-semibold mb-4">Login</h1>
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-4">
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>User Name</mat-label>
+            <input matInput formControlName="userName" [type]="'text'">
+            <mat-error *ngIf="loginForm.get('userName')?.errors?.['required']">
+              User Name field is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Password</mat-label>
+              <input matInput placeholder="Enter your password" formControlName="password" [type]="hide ? 'password' : 'text'">
+              <button mat-icon-button matSuffix type="button" (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            <mat-error *ngIf="loginForm.get('password')?.errors?.['required']">
+              Password field is required
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('password')?.errors?.['minlength']">
+              Password must be at least
+              {{ loginForm.get('password')?.errors?.['minlength']['requiredLength'] }}
+              characters long
+            </mat-error>
+          </mat-form-field>
+        <div>
+          <button [disabled]="loginForm.invalid" mat-raised-button color="primary" class="w-full" type="submit">
+            Login
+          </button>
+        </div>
+        <div class="flex flex-col items-center justify-center">
+          <span class="text-gray-400">Don't have an account yet? <a [routerLink]="['/register']" class="text-teal-400 hover:text-teal-200 w-full">Create one</a></span>
+        </div>
+      </form>
+    </div>
+  </div>
+  

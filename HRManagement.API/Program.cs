@@ -13,6 +13,7 @@ namespace HRManagement.API
             var builder = WebApplication.CreateBuilder(args);
             builder.AddContext();
             builder.AddIdentity();
+            builder.AddCors();
             builder.AddServices();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -29,6 +30,8 @@ namespace HRManagement.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
