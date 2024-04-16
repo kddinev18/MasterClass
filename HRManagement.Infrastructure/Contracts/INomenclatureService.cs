@@ -11,5 +11,6 @@ namespace HRManagement.Infrastructure.Contracts
     {
         IQueryable<NomenclatureDTO<int>> GetDepartments();
         IQueryable<NomenclatureDTO<int>> GetJobs();
+        IQueryable<NomenclatureDTO<int>> GetManagers();
     }
 }

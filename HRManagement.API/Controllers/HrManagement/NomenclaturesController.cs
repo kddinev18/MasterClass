@@ -28,5 +28,11 @@ namespace HRManagement.API.Controllers.HrManagement
         {
             return Ok(_nomenclatureService.GetDepartments());
         }
+
+        [HttpGet]
+        public IActionResult GetManagers()
+        {
+            return Ok(_nomenclatureService.GetManagers());
+        }
     }
 }
