@@ -1,5 +1,5 @@
-﻿using HRManagement.Domain.Constants;
-using HRManagement.Domain.DTO.HrManagement.Request;
+﻿using HRManagement.Domain.DTO.HrManagement.Request;
+using HRManagement.Domain.Enums;
 using HRManagement.Domain.Filters;
 using HRManagement.Domain.Filters.Base;
 using HRManagement.Infrastructure.Contracts;

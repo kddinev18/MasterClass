@@ -1,21 +1,15 @@
-﻿using HRManagement.DAL.Data;
-using HRManagement.Domain.Constants;
-using HRManagement.Domain.DTO.Common;
+﻿using HRManagement.Domain.Constants;
 using HRManagement.Domain.DTO.Common.Request;
 using HRManagement.Domain.DTO.Common.Response;
+using HRManagement.Domain.Enums;
 using HRManagement.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace HRManagement.Infrastructure.Services
 {
@@ -38,9 +32,9 @@ namespace HRManagement.Infrastructure.Services
             };
             var result = await _userManager.CreateAsync(user, registerInfo.Password);
 
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
-                if((await _userManager.AddToRoleAsync(user, Roles.HR)).Succeeded)
+                if ((await _userManager.AddToRoleAsync(user, nameof(Roles.HR))).Succeeded)
                 {
                     return await LogIn(new LogInDTO()
                     {
@@ -50,7 +44,7 @@ namespace HRManagement.Infrastructure.Services
                 }
             }
 
-            throw new UnauthorizedAccessException(string.Join('\n', result.Errors.Select(x=> $"{x.Code}: {x.Description}")));
+            throw new UnauthorizedAccessException(string.Join('\n', result.Errors.Select(x => $"{x.Code}: {x.Description}")));
         }
 
         public async Task<TokenDTO> LogIn(LogInDTO logInInfo)
@@ -73,7 +67,7 @@ namespace HRManagement.Infrastructure.Services
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config[Jwt.Key]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var claims = new List <Claim>()
+            var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),

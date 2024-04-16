@@ -3,7 +3,7 @@ using HRManagement.DAL.Data.Entities;
 using HRManagement.DAL.Repositories.Base;
 using HRManagement.DAL.Repositories.Contracts;
 using HRManagement.DataAccess.Repositories.Base;
-using HRManagement.Domain.Constants;
+using HRManagement.Domain.Enums;
 using HRManagement.Domain.Filters;
 using HRManagement.Domain.Filters.Base;
 
@@ -13,6 +13,16 @@ namespace HRManagement.DAL.Repositories
     {
         public EmployeeRepository(HrManagementContext db) : base(db)
         {
+        }
+
+        public override void DeleteAdditionalDependencies(Employee employee)
+        {
+            foreach (JobHistory jobHistory in _db.JobHistories.Where(jobHistory => jobHistory.EmployeeId == employee.Id))
+            {
+                jobHistory.IsActive = false;
+                jobHistory.UpdatedOn = employee.UpdatedOn;
+                jobHistory.UpdatedBy = employee.UpdatedBy;
+            }
         }
 
         public override void UpdateEntity(Employee oldEntity, Employee newEntity)

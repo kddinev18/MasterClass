@@ -18,12 +18,12 @@ namespace HRManagement.DAL.Repositories.Base
 
         public virtual IQueryable<TEntity> GetAll()
         {
-            return _entities;
+            return _entities.Where(x => x.IsActive);
         }
 
         public virtual IQueryable<TEntity> GetById(int id)
         {
-            return _entities.Where(x => x.Id == id);
+            return GetAll().Where(x => x.Id == id);
         }
 
         public virtual int AddOrUpdate(TEntity entity, IdentityUser user)
@@ -80,12 +80,12 @@ namespace HRManagement.DAL.Repositories.Base
             entity.IsActive = false;
             entity.UpdatedOn = DateTime.Now;
             entity.UpdatedBy = user.UserName;
-            DeleteAdditionalDependacies();
+            DeleteAdditionalDependencies(entity);
 
             return _db.SaveChanges();
         }
 
-        public virtual void DeleteAdditionalDependacies() { }
+        public virtual void DeleteAdditionalDependencies(TEntity entity) { }
         public abstract void UpdateEntity(TEntity oldEntity, TEntity newEntity);
 
     }

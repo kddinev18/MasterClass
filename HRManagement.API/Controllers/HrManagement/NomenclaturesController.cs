@@ -1,4 +1,4 @@
-﻿using HRManagement.Domain.Constants;
+﻿using HRManagement.Domain.Enums;
 using HRManagement.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
