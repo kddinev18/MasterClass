@@ -9,11 +9,19 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { EmployeeModel } from './models/employee-model';
 import { EmployeesService } from './employees.service';
 import { Subject, takeUntil } from 'rxjs';
+import { BaseFilterModel } from '../shared/models/base-filter-model';
+import { EmployeeFilterModel } from '../shared/models/employee-filter-model';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { EmployeeDialogComponent } from './employee-dialog/employee-dialog.component';
 
 @Component({
   selector: 'app-employees',
   standalone: true,
   imports: [
+    MatButtonModule,
+    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatTableModule,
@@ -28,21 +36,48 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  displayedColumns: string[] = ['firstName', 'lastName', 'email', 'phoneNumber', 'hireDate', 'jobPosition', 'manager', 'department'];
+  displayedColumns: string[] = ['firstName', 'lastName', 'email', 'phoneNumber', 'hireDate', 'job', 'manager', 'department'];
   dataSource!: MatTableDataSource<EmployeeModel>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
+    private _dialog: MatDialog,
     private _employeeService: EmployeesService
   ) { }
 
   ngOnInit(): void {
-    this._employeeService.getAllEmployees().pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
+    const initialFilter = {
+      page: 1,
+      pageSize: 10
+    } as BaseFilterModel<EmployeeFilterModel>;
+
+    this._employeeService.getAllEmployees(initialFilter).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
       this.dataSource = new MatTableDataSource(employees);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+    });
+  }
+
+  add(): void {
+    const dialog = this._dialog.open(EmployeeDialogComponent, {
+      width: '600px',
+      data: {
+        title: 'Add Employee'
+      }
+    });
+
+    dialog.afterClosed().pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (result) => {
+        if (result) {
+          this._employeeService.getAllEmployees({ page: 1, pageSize: 10 }).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
+            this.dataSource = new MatTableDataSource(employees);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          });
+        }
+      }
     });
   }
 

@@ -14,11 +14,6 @@ export const requestInterceptor: HttpInterceptorFn = (req, next) => {
         }
       });
     } 
-  // else {
-  //     snackbar.open('Your session has expired. Please log in again.');
-  //     securityService.logout();
-  //     router.navigate(['/login']);
-  // }
 
   return next(req);
 };

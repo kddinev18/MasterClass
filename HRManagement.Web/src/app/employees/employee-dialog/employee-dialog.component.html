@@ -1,0 +1,88 @@
+<div class="p-3">
+  <h1>{{ data.title }}</h1>
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div class="grid grid-cols-2 gap-x-2">
+      <mat-form-field appearance="fill">
+        <mat-label>First Name</mat-label>
+        <input
+          matInput
+          id="firstName"
+          type="text"
+          formControlName="firstName"
+          class="form-input block w-full"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Last Name</mat-label>
+        <input
+          matInput
+          id="lastName"
+          type="text"
+          formControlName="lastName"
+          class="form-input block w-full"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-input block w-full"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Phone Number</mat-label>
+        <input
+          matInput
+          id="phoneNumber"
+          type="tel"
+          formControlName="phoneNumber"
+          class="form-input block w-full"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Manager</mat-label>
+        <mat-select formControlName="managerId">
+          @for (manager of managers; track $index) {
+          <mat-option [value]="manager.id">{{ manager.value }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Job</mat-label>
+        <mat-select formControlName="jobId">
+          @for (job of jobs; track $index) {
+          <mat-option [value]="job.id">{{ job.value }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="col-span-2" appearance="fill">
+        <mat-label>Department</mat-label>
+        <mat-select formControlName="departmentId">
+          @for (department of departments; track $index) {
+          <mat-option [value]="department.id">{{
+            department.value
+          }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="col-span-2" appearance="fill">
+        <mat-label>Hire Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="hireDate"
+          class="form-input block w-full"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <button mat-raised-button color="primary" type="submit" class="w-full">
+      Submit
+    </button>
+  </form>
+</div>
