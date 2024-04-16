@@ -1,6 +1,7 @@
 ﻿using HRManagement.DAL.Data.Entities;
 using HRManagement.DAL.Repositories.Base;
 using HRManagement.DAL.Repositories.Contracts;
+using HRManagement.Domain.DTO.Common;
 using HRManagement.Domain.DTO.HrManagement.Request;
 using HRManagement.Domain.DTO.HrManagement.Response;
 using HRManagement.Domain.Filters;
@@ -13,30 +14,48 @@ namespace HRManagement.Infrastructure.Services
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IJobHistoryRepository _jobHistoryRepository;
-        private readonly UnitOfWork _unitOfWork;
         public EmployeeService(UnitOfWork unitOfWork, ICurrentUserService currentUserService) : base(currentUserService)
         {
             _employeeRepository = unitOfWork.GetRepository<Employee>() as IEmployeeRepository;
             _jobHistoryRepository = unitOfWork.GetRepository<JobHistory>() as IJobHistoryRepository;
-            _unitOfWork = unitOfWork;
         }
 
         public IQueryable<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters)
         {
             return _employeeRepository.GetAllFiltered(filters)
-                .Select(x => new EmployeeResponseDTO()
+                .Select(employee => new EmployeeResponseDTO()
                 {
-                    Id = x.Id,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    Email = x.Email,
-                    PhoneNumber = x.PhoneNumber,
-                    ManagerName = x.Manager != null ? x.Manager.FirstName + " " + x.Manager.LastName : null,
-                    JobTitle = x.Job.Title,
-                    DepartmentName = x.Department.Name,
+                    Id = employee.Id,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    Email = employee.Email,
+                    PhoneNumber = employee.PhoneNumber,
+                    Manager = employee.Manager != null ? new NomenclatureDTO<int>()
+                    {
+                        Id = employee.Manager.Id,
+                        Code = employee.Manager.Email.ToUpper(),
+                        Value = employee.Manager.FirstName + " " + employee.Manager.LastName
+                    } : null,
+                    Job = new NomenclatureDTO<int>()
+                    {
+                        Id = employee.Job.Id,
+                        Code = employee.Job.Title.ToUpper(),
+                        Value = employee.Job.Title
+                    },
+                    Department = new NomenclatureDTO<int>()
+                    {
+                        Id = employee.Department.Id,
+                        Code = employee.Department.Name.ToUpper(),
+                        Value = employee.Department.Name
+                    },
                     PreviousJobs = _jobHistoryRepository.GetAll()
-                        .Where(j => j.EmployeeId == x.Id && j.EndDate.HasValue)
-                        .Select(j => j.Job.Title)
+                        .Where(job => job.EmployeeId == employee.Id && job.EndDate.HasValue)
+                        .Select(job => new NomenclatureDTO<int>()
+                        {
+                            Id = employee.Job.Id,
+                            Code = employee.Job.Title.ToUpper(),
+                            Value = employee.Job.Title
+                        })
                         .ToList()
                 });
         }
@@ -45,19 +64,35 @@ namespace HRManagement.Infrastructure.Services
         {
             return _employeeRepository
                 .GetById(id)
-                .Select(employee =>
-                    new EmployeeResponseDTO()
+                .Select(employee => new EmployeeResponseDTO()
+                {
+                    Id = employee.Id,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    Email = employee.Email,
+                    PhoneNumber = employee.PhoneNumber,
+                    Job = new NomenclatureDTO<int>()
                     {
-                        Id = employee.Id,
-                        FirstName = employee.FirstName,
-                        LastName = employee.LastName,
-                        Email = employee.Email,
-                        PhoneNumber = employee.PhoneNumber,
-                        ManagerName = employee.Manager != null ? employee.Manager.FirstName + " " + employee.Manager.LastName : null,
-                        JobTitle = employee.Job.Title,
-                        DepartmentName = employee.Department.Name,
-                    }
-                )
+                        Id = employee.Job.Id,
+                        Code = employee.Job.Title.ToUpper(),
+                        Value = employee.Job.Title
+                    },
+                    Department = new NomenclatureDTO<int>()
+                    {
+                        Id = employee.Department.Id,
+                        Code = employee.Department.Name.ToUpper(),
+                        Value = employee.Department.Name
+                    },
+                    PreviousJobs = _jobHistoryRepository.GetAll()
+                    .Where(job => job.EmployeeId == employee.Id && job.EndDate.HasValue)
+                    .Select(job => new NomenclatureDTO<int>()
+                    {
+                        Id = employee.Job.Id,
+                        Code = employee.Job.Title.ToUpper(),
+                        Value = employee.Job.Title
+                    })
+                    .ToList()
+                })
                 .First();
         }
 
@@ -94,7 +129,7 @@ namespace HRManagement.Infrastructure.Services
         public int Promote(PromoteDTO promote)
         {
             JobHistory oldJob = _jobHistoryRepository.GetAll()
-                .Where(j => j.EmployeeId == promote.EmployeeId && !j.EndDate.HasValue)
+                .Where(job => job.EmployeeId == promote.EmployeeId && !job.EndDate.HasValue)
                 .First();
             oldJob.EndDate = DateTime.Now;
             _jobHistoryRepository.AddOrUpdate(oldJob, _currentUserService.User);

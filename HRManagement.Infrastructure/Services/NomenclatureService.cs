@@ -20,40 +20,34 @@ namespace HRManagement.Infrastructure.Services
         public IQueryable<NomenclatureDTO<int>> GetJobs()
         {
             return _jobRepository.GetAll()
-                .Select(x =>
-                    new NomenclatureDTO<int>()
-                    {
-                        Id = x.Id,
-                        Code = x.Title.ToUpper(),
-                        Value = x.Title
-                    }
-                );
+                .Select(job => new NomenclatureDTO<int>()
+                {
+                    Id = job.Id,
+                    Code = job.Title.ToUpper(),
+                    Value = job.Title
+                });
         }
 
         public IQueryable<NomenclatureDTO<int>> GetDepartments()
         {
             return _departmentRepository.GetAll()
-                .Select(x =>
-                    new NomenclatureDTO<int>()
-                    {
-                        Id = x.Id,
-                        Code = x.Name.ToUpper(),
-                        Value = x.Name
-                    }
-                );
+                .Select(department => new NomenclatureDTO<int>()
+                {
+                    Id = department.Id,
+                    Code = department.Name.ToUpper(),
+                    Value = department.Name
+                });
         }
 
         public IQueryable<NomenclatureDTO<int>> GetManagers()
         {
             return _employeeRepository.GetAll()
-                .Select(x =>
-                    new NomenclatureDTO<int>()
-                    {
-                        Id = x.Id,
-                        Code = x.Email.ToUpper(),
-                        Value = x.FirstName + " " + x.LastName
-                    }
-                );
+                .Select(employee => new NomenclatureDTO<int>()
+                {
+                    Id = employee.Id,
+                    Code = employee.Email.ToUpper(),
+                    Value = employee.FirstName + " " + employee.LastName
+                });
         }
     }
 }
