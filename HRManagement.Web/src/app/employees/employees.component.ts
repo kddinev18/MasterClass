@@ -15,6 +15,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeDialogComponent } from './employee-dialog/employee-dialog.component';
+import { Actions } from '../shared/enums/actions';
+import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-employees',
@@ -36,7 +39,17 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-  displayedColumns: string[] = ['firstName', 'lastName', 'email', 'phoneNumber', 'hireDate', 'job', 'manager', 'department'];
+  displayedColumns: string[] = [
+    'firstName',
+    'lastName',
+    'email',
+    'phoneNumber',
+    'hireDate',
+    'job',
+    'manager',
+    'department',
+    'actions'
+  ];
   dataSource!: MatTableDataSource<EmployeeModel>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -44,6 +57,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
   constructor(
     private _dialog: MatDialog,
+    private _snackbar: MatSnackBar,
     private _employeeService: EmployeesService
   ) { }
 
@@ -64,7 +78,8 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     const dialog = this._dialog.open(EmployeeDialogComponent, {
       width: '600px',
       data: {
-        title: 'Add Employee'
+        title: 'Add Employee',
+        action: Actions.CREATE
       }
     });
 
@@ -75,6 +90,69 @@ export class EmployeesComponent implements OnInit, OnDestroy {
             this.dataSource = new MatTableDataSource(employees);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
+          });
+        }
+      }
+    });
+  }
+
+  show(id: number) {
+    const dialog = this._dialog.open(EmployeeDialogComponent, {
+      width: '600px',
+      data: {
+        title: 'View Employee Details',
+        id: id,
+        action: Actions.SHOW
+      }
+    });
+  }
+
+  edit(id: number) {
+    const dialog = this._dialog.open(EmployeeDialogComponent, {
+      width: '600px',
+      data: {
+        title: 'Edit Employee',
+        id: id,
+        action: Actions.EDIT
+      }
+    });
+
+    dialog.afterClosed().pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (result) => {
+        if (result) {
+          this._employeeService.getAllEmployees({ page: 1, pageSize: 10 }).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
+            this.dataSource = new MatTableDataSource(employees);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          });
+        }
+      }
+    });
+  }
+
+  delete(id: number) {
+    const dialog = this._dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete Employee',
+        message: 'Are you sure you want to delete this employee?'
+      }
+    });
+
+    dialog.afterClosed().pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (result) => {
+        if (result) {
+          this._employeeService.deleteById(id).pipe(takeUntil(this._unsubscribeAll)).subscribe({
+            next: () => {
+              this._snackbar.open('Employee has been deleted', undefined, {
+                duration: 4000
+              });
+              this._employeeService.getAllEmployees({ page: 1, pageSize: 10 }).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
+                this.dataSource = new MatTableDataSource(employees);
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
+              });
+            }
           });
         }
       }

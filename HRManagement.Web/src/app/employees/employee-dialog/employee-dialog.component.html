@@ -45,9 +45,9 @@
       <mat-form-field appearance="fill">
         <mat-label>Manager</mat-label>
         <mat-select formControlName="managerId">
-          @for (manager of managers; track $index) {
-          <mat-option [value]="manager.id">{{ manager.value }}</mat-option>
-          }
+            @for (manager of managers; track $index) {
+                <mat-option [value]="manager.id">{{ manager.value }}</mat-option>
+            }
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="fill">
@@ -81,8 +81,14 @@
       </mat-form-field>
     </div>
 
-    <button mat-raised-button color="primary" type="submit" class="w-full">
+    <button *ngIf="action !== 'SHOW';else closeButton" mat-raised-button color="primary" type="submit" class="w-full">
       Submit
     </button>
+
+    <ng-template #closeButton>
+      <button mat-raised-button color="primary" (click)="dialogRef.close()" type="button" class="w-full">
+        Close
+      </button>
+    </ng-template>
   </form>
 </div>

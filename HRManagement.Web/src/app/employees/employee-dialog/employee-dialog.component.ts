@@ -14,6 +14,7 @@ import { NomenclatureModel } from '../../shared/models/nomenclature-model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmployeesService } from '../employees.service';
+import { Actions } from '../../shared/enums/actions';
 
 @Component({
   selector: 'app-employee-dialog',
@@ -37,6 +38,8 @@ export class EmployeeDialogComponent implements OnInit, OnDestroy {
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+  id: number | null = null;
+  action: string | null = null;
   employeeForm: FormGroup = new FormGroup({});
   jobs: NomenclatureModel[] = [];
   departments: NomenclatureModel[] = [];
@@ -47,11 +50,14 @@ export class EmployeeDialogComponent implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar,
     private _employeesService: EmployeesService,
     private _fb: FormBuilder,
-    private _dialogRef: MatDialogRef<EmployeeDialogComponent>,
+    public dialogRef: MatDialogRef<EmployeeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
 
   ngOnInit(): void {
+    this.id = this.data?.id;
+    this.action = this.data?.action;
+
     forkJoin([
       this._nomenclatureService.getJobs(),
       this._nomenclatureService.getDepartments(),
@@ -73,17 +79,46 @@ export class EmployeeDialogComponent implements OnInit, OnDestroy {
       managerId: [null],
       departmentId: ['', [Validators.required]]
     });
+
+    if (this.action === Actions.SHOW) {
+      this.employeeForm.disable();
+    }
+
+    debugger
+    if (this.id) {
+      this._employeesService.getById(this.id).pipe(takeUntil(this._unsubscribeAll)).subscribe(employee => {
+        debugger
+        this.employeeForm.patchValue({
+          id: employee.id,
+          firstName: employee.firstName,
+          lastName: employee.lastName,
+          email: employee.email,
+          phoneNumber: employee.phoneNumber,
+          hireDate: employee.hireDate,
+          jobId: employee.job.id,
+          managerId: employee.manager?.id,
+          departmentId: employee.department.id
+        });
+      }); 
+    }
   }
 
   onSubmit(): void {
     if (this.employeeForm.valid) {
       this._employeesService.addOrUpdate(this.employeeForm.value).pipe(takeUntil(this._unsubscribeAll)).subscribe({
         next: () => {
-          this._snackbar.open('New employee has been saved', undefined, {
-            duration: 2000
-          });
 
-          this._dialogRef.close(true);
+          if (this.action === Actions.CREATE) {
+            this._snackbar.open('New employee has been saved', undefined, {
+              duration: 4000
+            });
+          } else {
+            this._snackbar.open('Employee has been updated', undefined, {
+              duration: 4000
+            });
+          }
+
+          this.dialogRef.close(true);
         }
       });
     }
