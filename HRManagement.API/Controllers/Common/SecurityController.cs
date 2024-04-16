@@ -1,4 +1,4 @@
-﻿using HRManagement.Domain.DTO.Common.Request;
+﻿using HRManagement.Domain.DTO.Common;
 using HRManagement.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

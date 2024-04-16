@@ -1,6 +1,5 @@
 ﻿using HRManagement.Domain.Constants;
-using HRManagement.Domain.DTO.Common.Request;
-using HRManagement.Domain.DTO.Common.Response;
+using HRManagement.Domain.DTO.Common;
 using HRManagement.Domain.Enums;
 using HRManagement.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Identity;

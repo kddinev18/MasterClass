@@ -1,5 +1,4 @@
-﻿using HRManagement.Domain.DTO.Common.Request;
-using HRManagement.Domain.DTO.Common.Response;
+﻿using HRManagement.Domain.DTO.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
