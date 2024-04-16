@@ -31,51 +31,49 @@ namespace HRManagement.DAL.Repositories
         {
             IQueryable<Employee> query = GetAll();
 
-            if (filters.Filters == null)
+            if (filters.Filters != null)
             {
-                return PageResult(query, filters);
-            }
+                EmployeeFilters employeeFilters = filters.Filters;
 
-            EmployeeFilters employeeFilters = filters.Filters;
+                if (employeeFilters.FirstName != null)
+                {
+                    query = query.Where(e => e.FirstName.Contains(employeeFilters.FirstName));
+                }
 
-            if (employeeFilters.FirstName != null)
-            {
-                query = query.Where(e => e.FirstName.Contains(employeeFilters.FirstName));
-            }
+                if (employeeFilters.LastName != null)
+                {
+                    query = query.Where(e => e.LastName.Contains(employeeFilters.LastName));
+                }
 
-            if (employeeFilters.LastName != null)
-            {
-                query = query.Where(e => e.LastName.Contains(employeeFilters.LastName));
-            }
+                if (employeeFilters.Email != null)
+                {
+                    query = query.Where(e => e.Email.Contains(employeeFilters.Email));
+                }
 
-            if (employeeFilters.Email != null)
-            {
-                query = query.Where(e => e.Email.Contains(employeeFilters.Email));
-            }
+                if (employeeFilters.PhoneNumber != null)
+                {
+                    query = query.Where(e => e.PhoneNumber.Contains(employeeFilters.PhoneNumber));
+                }
 
-            if (employeeFilters.PhoneNumber != null)
-            {
-                query = query.Where(e => e.PhoneNumber.Contains(employeeFilters.PhoneNumber));
-            }
+                if (employeeFilters.HireDate != null)
+                {
+                    query = query.Where(e => e.HireDate == employeeFilters.HireDate);
+                }
 
-            if (employeeFilters.HireDate != null)
-            {
-                query = query.Where(e => e.HireDate == employeeFilters.HireDate);
-            }
+                if (employeeFilters.JobId != null)
+                {
+                    query = query.Where(e => e.JobId == employeeFilters.JobId);
+                }
 
-            if (employeeFilters.JobId != null)
-            {
-                query = query.Where(e => e.JobId == employeeFilters.JobId);
-            }
+                if (employeeFilters.ManagerId != null)
+                {
+                    query = query.Where(e => e.ManagerId == employeeFilters.ManagerId);
+                }
 
-            if (employeeFilters.ManagerId != null)
-            {
-                query = query.Where(e => e.ManagerId == employeeFilters.ManagerId);
-            }
-
-            if (employeeFilters.DepartmentId != null)
-            {
-                query = query.Where(e => e.DepartmentId == employeeFilters.DepartmentId);
+                if (employeeFilters.DepartmentId != null)
+                {
+                    query = query.Where(e => e.DepartmentId == employeeFilters.DepartmentId);
+                }
             }
 
             if (filters.SortBy != null)
@@ -90,11 +88,6 @@ namespace HRManagement.DAL.Repositories
                 }
             }
 
-            return PageResult(query, filters);
-        }
-
-        private IQueryable<Employee> PageResult(IQueryable<Employee> query, BaseFilter<EmployeeFilters> filters)
-        {
             return query
                 .Skip((filters.Page - 1) * filters.PageSize)
                 .Take(filters.PageSize);

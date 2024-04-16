@@ -29,6 +29,7 @@ namespace HRManagement.Infrastructure.Services
                     FirstName = employee.FirstName,
                     LastName = employee.LastName,
                     Email = employee.Email,
+                    HireDate = employee.HireDate,
                     PhoneNumber = employee.PhoneNumber,
                     Manager = employee.Manager != null ? new NomenclatureDTO<int>()
                     {
@@ -71,6 +72,7 @@ namespace HRManagement.Infrastructure.Services
                     LastName = employee.LastName,
                     Email = employee.Email,
                     PhoneNumber = employee.PhoneNumber,
+                    HireDate = employee.HireDate,
                     Job = new NomenclatureDTO<int>()
                     {
                         Id = employee.Job.Id,
