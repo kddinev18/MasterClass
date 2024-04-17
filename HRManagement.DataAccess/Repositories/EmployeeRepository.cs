@@ -45,29 +45,29 @@ namespace HRManagement.DAL.Repositories
             {
                 EmployeeFilters employeeFilters = filters.Filters;
 
-                if (employeeFilters.FirstName != null)
+                if (!string.IsNullOrEmpty(employeeFilters.FirstName))
                 {
                     query = query.Where(e => e.FirstName.Contains(employeeFilters.FirstName));
                 }
 
-                if (employeeFilters.LastName != null)
+                if (!string.IsNullOrEmpty(employeeFilters.LastName))
                 {
                     query = query.Where(e => e.LastName.Contains(employeeFilters.LastName));
                 }
 
-                if (employeeFilters.Email != null)
+                if (!string.IsNullOrEmpty(employeeFilters.Email))
                 {
                     query = query.Where(e => e.Email.Contains(employeeFilters.Email));
                 }
 
-                if (employeeFilters.PhoneNumber != null)
+                if (!string.IsNullOrEmpty(employeeFilters.PhoneNumber))
                 {
                     query = query.Where(e => e.PhoneNumber.Contains(employeeFilters.PhoneNumber));
                 }
 
                 if (employeeFilters.HireDate != null)
                 {
-                    query = query.Where(e => e.HireDate == employeeFilters.HireDate);
+                    query = query.Where(e => e.HireDate.Date == employeeFilters.HireDate.Value.Date);
                 }
 
                 if (employeeFilters.JobId != null)
@@ -86,7 +86,7 @@ namespace HRManagement.DAL.Repositories
                 }
             }
 
-            if (filters.SortBy != null)
+            if (!string.IsNullOrEmpty(filters.SortBy))
             {
                 if (filters.SortDirection == null || filters.SortDirection == SortOrder.ASC)
                 {

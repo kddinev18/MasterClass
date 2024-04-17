@@ -84,10 +84,8 @@ export class EmployeeDialogComponent implements OnInit, OnDestroy {
       this.employeeForm.disable();
     }
 
-    debugger
     if (this.id) {
       this._employeesService.getById(this.id).pipe(takeUntil(this._unsubscribeAll)).subscribe(employee => {
-        debugger
         this.employeeForm.patchValue({
           id: employee.id,
           firstName: employee.firstName,

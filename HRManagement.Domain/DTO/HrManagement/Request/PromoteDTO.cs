@@ -1,9 +1,9 @@
 ﻿namespace HRManagement.Domain.DTO.HrManagement.Request
 {
-    public class PromoteDTO
+    public class PromoteEmployeeDTO
     {
         public int EmployeeId { get; set; }
         public int NewJobId { get; set; }
-        public int? NewDepartment { get; set; }
+        public int? NewDepartmentId { get; set; }
     }
 }

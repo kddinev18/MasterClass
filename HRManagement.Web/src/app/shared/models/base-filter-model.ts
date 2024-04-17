@@ -1,6 +1,6 @@
 export class BaseFilterModel<T> {
-    page: number;
-    pageSize: number;
+    page: number = 0;
+    pageSize: number = 10;
     sortBy?: string;
     sortDirection?: string;
     filters?: T;

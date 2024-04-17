@@ -42,6 +42,7 @@ namespace HRManagement.Infrastructure.Services
         public IQueryable<NomenclatureDTO<int>> GetManagers()
         {
             return _employeeRepository.GetAll()
+                .Where(employee => employee.ManagerId == null)
                 .Select(employee => new NomenclatureDTO<int>()
                 {
                     Id = employee.Id,

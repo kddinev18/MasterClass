@@ -32,19 +32,17 @@ namespace HRManagement.DAL.Repositories.Base
             {
                 entity.CreatedOn = DateTime.Now;
                 entity.CreatedBy = user.UserName;
+                entity.IsActive = true;
                 _entities.Add(entity);
                 _db.SaveChanges();
 
                 return entity.Id;
             }
-            else
-            {
-                TEntity dbEntity = GetById(entity.Id).First();
-                UpdateEntity(dbEntity, entity);
-                dbEntity.UpdatedOn = DateTime.Now;
-                dbEntity.UpdatedBy = user.UserName;
-                return _db.SaveChanges();
-            }
+            TEntity dbEntity = GetById(entity.Id).First();
+            UpdateEntity(dbEntity, entity);
+            dbEntity.UpdatedOn = DateTime.Now;
+            dbEntity.UpdatedBy = user.UserName;
+            return _db.SaveChanges();
         }
 
         public TEntity GetAddOrUpdate(TEntity entity, IdentityUser user)
@@ -53,6 +51,8 @@ namespace HRManagement.DAL.Repositories.Base
             {
                 entity.CreatedOn = DateTime.Now;
                 entity.CreatedBy = user.UserName;
+                entity.IsActive = true;
+
                 _entities.Add(entity);
                 _db.SaveChanges();
 

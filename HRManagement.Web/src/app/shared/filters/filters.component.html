@@ -1,1 +1,29 @@
-<p>filters works!</p>
+<div>
+
+    <mat-accordion>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header [collapsedHeight]="'48px'">
+                <mat-panel-title>
+                    <span>Filters</span>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <ng-template [ngTemplateOutlet]="filterTemplate" [ngTemplateOutletContext]="{ $implicit: filtersFormGroup }"></ng-template>
+
+            <div class="flex justify-end gap-x-2 mb-3">
+                <button mat-button (click)="reset()">
+                    <mat-icon class="icon-size-4">clear</mat-icon>
+                    <span class="ml-2">Clear</span>
+                </button>
+                <button mat-flat-button [color]="'primary'" (click)="submit()">
+                    <mat-icon class="icon-size-4">search</mat-icon>
+                    <span class="ml-2">Filter</span>
+                </button>
+            </div>
+
+        </mat-expansion-panel>
+
+    </mat-accordion>
+
+</div>

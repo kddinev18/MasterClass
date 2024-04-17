@@ -45,7 +45,7 @@ namespace HRManagement.API.Controllers.HrManagement
         }
 
         [HttpPost]
-        public IActionResult PromoteEmployee([FromBody] PromoteDTO promote)
+        public IActionResult PromoteEmployee([FromBody] PromoteEmployeeDTO promote)
         {
             return Ok(_employeeService.Promote(promote));
         }

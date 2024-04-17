@@ -8,7 +8,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { EmployeeModel } from './models/employee-model';
 import { EmployeesService } from './employees.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, forkJoin, takeUntil } from 'rxjs';
 import { BaseFilterModel } from '../shared/models/base-filter-model';
 import { EmployeeFilterModel } from '../shared/models/employee-filter-model';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,14 +18,29 @@ import { EmployeeDialogComponent } from './employee-dialog/employee-dialog.compo
 import { Actions } from '../shared/enums/actions';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EmployeePromoteDialogComponent } from './employee-promote-dialog/employee-promote-dialog.component';
+import { EmployeePromoteModel } from './models/employee-promote-model';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { FiltersComponent } from '../shared/filters/filters.component';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { NomenclatureModel } from '../shared/models/nomenclature-model';
+import { NomenclatureService } from '../shared/services/nomenclature.service';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-employees',
   standalone: true,
   imports: [
     MatButtonModule,
+    FiltersComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
     MatIconModule,
+    MatTooltipModule,
     MatFormFieldModule,
+    MatSelectModule,
     MatInputModule,
     MatTableModule,
     MatSortModule,
@@ -38,6 +53,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class EmployeesComponent implements OnInit, OnDestroy {
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
+
+  initialFilter: BaseFilterModel<EmployeeFilterModel> = {
+    page: 1,
+    pageSize: 10
+  };
+
+  filters: BaseFilterModel<EmployeeFilterModel>[] = [];
+  jobs: NomenclatureModel[] = [];
+  managers: NomenclatureModel[] = [];
+  departments: NomenclatureModel[] = [];
 
   displayedColumns: string[] = [
     'firstName',
@@ -56,22 +81,27 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
+    private _fb: FormBuilder,
     private _dialog: MatDialog,
     private _snackbar: MatSnackBar,
+    private _nomenclatureService: NomenclatureService,
     private _employeeService: EmployeesService
   ) { }
 
   ngOnInit(): void {
-    const initialFilter = {
-      page: 1,
-      pageSize: 10
-    } as BaseFilterModel<EmployeeFilterModel>;
-
-    this._employeeService.getAllEmployees(initialFilter).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
-      this.dataSource = new MatTableDataSource(employees);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+    forkJoin([
+      this._nomenclatureService.getJobs(),
+      this._nomenclatureService.getManagers(),
+      this._nomenclatureService.getDepartments()
+    ])
+    .pipe(takeUntil(this._unsubscribeAll))
+    .subscribe(([jobs, managers, departments]) => {
+      this.jobs = jobs;
+      this.managers = managers;
+      this.departments = departments;
     });
+
+    this.fetchData();
   }
 
   add(): void {
@@ -86,12 +116,38 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     dialog.afterClosed().pipe(takeUntil(this._unsubscribeAll)).subscribe({
       next: (result) => {
         if (result) {
-          this._employeeService.getAllEmployees({ page: 1, pageSize: 10 }).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
-            this.dataSource = new MatTableDataSource(employees);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-          });
+          this.fetchData();
         }
+      }
+    });
+  }
+
+  promote(id: number) {
+    const dialog = this._dialog.open(EmployeePromoteDialogComponent, {
+      width: '600px',
+      data: {
+        id: id
+      }
+    });
+
+    debugger
+    dialog.afterClosed().pipe(takeUntil(this._unsubscribeAll)).subscribe({
+      next: (promoteRes) => {
+        const promoteModel = {
+          employeeId: promoteRes.employeeId,
+          newJobId: promoteRes.newJobId,
+          newDepartmentId: promoteRes.newDepartmentId
+        } as EmployeePromoteModel;
+
+        this._employeeService.promote(promoteModel).pipe(takeUntil(this._unsubscribeAll)).subscribe({
+          next: () => {
+            this._snackbar.open('Employee has been promoted', undefined, {
+              duration: 4000
+            });
+
+            this.fetchData();
+          }
+        });
       }
     });
   }
@@ -120,11 +176,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     dialog.afterClosed().pipe(takeUntil(this._unsubscribeAll)).subscribe({
       next: (result) => {
         if (result) {
-          this._employeeService.getAllEmployees({ page: 1, pageSize: 10 }).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
-            this.dataSource = new MatTableDataSource(employees);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-          });
+          this.fetchData();
         }
       }
     });
@@ -147,15 +199,30 @@ export class EmployeesComponent implements OnInit, OnDestroy {
               this._snackbar.open('Employee has been deleted', undefined, {
                 duration: 4000
               });
-              this._employeeService.getAllEmployees({ page: 1, pageSize: 10 }).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
-                this.dataSource = new MatTableDataSource(employees);
-                this.dataSource.paginator = this.paginator;
-                this.dataSource.sort = this.sort;
-              });
+
+              this.fetchData();
             }
           });
         }
       }
+    });
+  }
+
+  applyFilter(value: any) {
+    const filter: BaseFilterModel<EmployeeFilterModel> = {
+      ...this.initialFilter,
+      filters: value
+    };
+
+    this.fetchData(filter);
+  }
+  
+  private fetchData(filter = this.initialFilter): void {
+    debugger
+    this._employeeService.getAllEmployees(filter).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
+      this.dataSource = new MatTableDataSource(employees);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     });
   }
 
