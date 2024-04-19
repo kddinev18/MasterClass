@@ -98,7 +98,12 @@ namespace HRManagement.DAL.Repositories
                 }
             }
 
-            return query
+            return query;
+        }
+
+        public IQueryable<Employee> PageResult(BaseFilter<EmployeeFilters> filters)
+        {
+            return GetAllFiltered(filters)
                 .Skip((filters.Page - 1) * filters.PageSize)
                 .Take(filters.PageSize);
         }

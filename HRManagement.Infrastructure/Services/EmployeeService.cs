@@ -22,7 +22,7 @@ namespace HRManagement.Infrastructure.Services
 
         public IQueryable<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters)
         {
-            return _employeeRepository.GetAllFiltered(filters)
+            return _employeeRepository.PageResult(filters)
                 .Select(employee => new EmployeeResponseDTO()
                 {
                     Id = employee.Id,
@@ -57,7 +57,8 @@ namespace HRManagement.Infrastructure.Services
                             Code = employee.Job.Title.ToUpper(),
                             Value = employee.Job.Title
                         })
-                        .ToList()
+                        .ToList(),
+                    EmployeesCount = _employeeRepository.GetAllFiltered(filters).Count()
                 });
         }
 

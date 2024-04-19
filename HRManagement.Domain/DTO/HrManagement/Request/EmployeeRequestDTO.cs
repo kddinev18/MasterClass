@@ -11,5 +11,6 @@
         public int JobId { get; set; }
         public int DepartmentId { get; set; }
         public DateTime HireDate { get; set; }
+
     }
 }

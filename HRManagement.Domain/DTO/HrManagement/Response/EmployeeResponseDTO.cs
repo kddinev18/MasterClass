@@ -14,5 +14,7 @@ namespace HRManagement.Domain.DTO.HrManagement.Response
         public NomenclatureDTO<int> Job { get; set; } = null!;
         public NomenclatureDTO<int> Department { get; set; } = null!;
         public List<NomenclatureDTO<int>> PreviousJobs { get; set; } = new List<NomenclatureDTO<int>>();
+
+        public int EmployeesCount { get; set; }
     }
 }

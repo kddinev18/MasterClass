@@ -7,5 +7,6 @@ namespace HRManagement.DAL.Repositories.Contracts
     public interface IEmployeeRepository : IGenericRepository<Employee>
     {
         IQueryable<Employee> GetAllFiltered(BaseFilter<EmployeeFilters> filters);
+        IQueryable<Employee> PageResult(BaseFilter<EmployeeFilters> filters);
     }
 }
