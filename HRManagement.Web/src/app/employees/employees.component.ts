@@ -130,7 +130,6 @@ export class EmployeesComponent implements OnInit, OnDestroy {
       }
     });
 
-    debugger
     dialog.afterClosed().pipe(takeUntil(this._unsubscribeAll)).subscribe({
       next: (promoteRes) => {
         const promoteModel = {
@@ -218,7 +217,6 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   }
   
   private fetchData(filter = this.initialFilter): void {
-    debugger
     this._employeeService.getAllEmployees(filter).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
       this.dataSource = new MatTableDataSource(employees);
       this.dataSource.paginator = this.paginator;
