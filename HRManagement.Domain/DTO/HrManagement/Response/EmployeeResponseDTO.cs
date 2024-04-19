@@ -14,7 +14,7 @@ namespace HRManagement.Domain.DTO.HrManagement.Response
         public NomenclatureDTO<int>? Manager { get; set; }
         public NomenclatureDTO<int> Job { get; set; } = null!;
         public NomenclatureDTO<int> Department { get; set; } = null!;
-        public IQueryable<NomenclatureDTO<int>> PreviousJobs { get; set; }
+        public List<NomenclatureDTO<int>> PreviousJobs { get; set; } = new List<NomenclatureDTO<int>>();
 
     }
 }

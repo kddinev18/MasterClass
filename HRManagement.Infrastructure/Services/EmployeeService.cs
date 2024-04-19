@@ -60,6 +60,7 @@ namespace HRManagement.Infrastructure.Services
                             Code = employee.Job.Title.ToUpper(),
                             Value = employee.Job.Title
                         })
+                        .ToList()
                 }),
                 Count = _employeeRepository.GetAllFiltered(filters).Count()
             };
@@ -103,6 +104,7 @@ namespace HRManagement.Infrastructure.Services
                         Code = employee.Job.Title.ToUpper(),
                         Value = employee.Job.Title
                     })
+                    .ToList()
                 })
                 .First();
         }
