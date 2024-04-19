@@ -7,6 +7,7 @@ import { EmployeeFilterModel } from '../shared/models/employee-filter-model';
 import { EmployeeFormModel } from './models/employee-form-model';
 import { EmployeeResponseModel } from './models/employee-response-model';
 import { EmployeePromoteModel } from './models/employee-promote-model';
+import { TableModel } from './models/table-model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,8 @@ export class EmployeesService extends CrudService<EmployeeModel> {
     super(injector)
   }
 
-  getAllEmployees(filters: BaseFilterModel<EmployeeFilterModel>): Observable<EmployeeModel[]> {
-    return this.httpClient.post<EmployeeModel[]>(`${this.APIUrl}/GetAll`, filters);
+  getAllEmployees(filters: BaseFilterModel<EmployeeFilterModel>): Observable<TableModel> {
+    return this.httpClient.post<TableModel>(`${this.APIUrl}/GetAll`, filters);
   }
 
   getById(id: number): Observable<EmployeeResponseModel> {
