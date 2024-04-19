@@ -224,7 +224,11 @@ export class EmployeesComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   applyFilter(value: any) {
-    debugger
+    if (value.hireDate) {
+      const localDate = new Date(value.hireDate.getFullYear(), value.hireDate.getMonth(), value.hireDate.getDate(), value.hireDate.getHours() + 3);
+      value.hireDate = localDate.toISOString();
+    }
+
     this.filterValue = value;
     const filter: BaseFilterModel<EmployeeFilterModel> = {
       ...this.initialFilter,
@@ -245,7 +249,6 @@ export class EmployeesComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   changePage(event: PageEvent) {
-    debugger
     const filter: BaseFilterModel<EmployeeFilterModel> = {
       page: event.pageIndex + 1,
       pageSize: event.pageSize,
@@ -256,7 +259,6 @@ export class EmployeesComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   
   private fetchData(filter = this.initialFilter): void {
-    debugger
     this._employeeService.getAllEmployees(filter).pipe(takeUntil(this._unsubscribeAll)).subscribe(data => {
       this.dataSource = new MatTableDataSource(data.items);
       this.count = data.count;
