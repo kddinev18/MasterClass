@@ -1,8 +1,9 @@
 ﻿using HRManagement.Domain.DTO.Common;
+using HRManagement.Domain.DTO.Common.Base;
 
 namespace HRManagement.Domain.DTO.HrManagement.Response
 {
-    public class EmployeeResponseDTO
+    public class EmployeeResponseDTO : IResponseModel
     {
         public int Id { get; set; }
         public string FirstName { get; set; } = null!;
@@ -13,8 +14,7 @@ namespace HRManagement.Domain.DTO.HrManagement.Response
         public NomenclatureDTO<int>? Manager { get; set; }
         public NomenclatureDTO<int> Job { get; set; } = null!;
         public NomenclatureDTO<int> Department { get; set; } = null!;
-        public List<NomenclatureDTO<int>> PreviousJobs { get; set; } = new List<NomenclatureDTO<int>>();
+        public IQueryable<NomenclatureDTO<int>> PreviousJobs { get; set; }
 
-        public int EmployeesCount { get; set; }
     }
 }

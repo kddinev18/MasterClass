@@ -2,6 +2,7 @@
 using HRManagement.DAL.Repositories.Base;
 using HRManagement.DAL.Repositories.Contracts;
 using HRManagement.Domain.DTO.Common;
+using HRManagement.Domain.DTO.Common.Base;
 using HRManagement.Domain.DTO.HrManagement.Request;
 using HRManagement.Domain.DTO.HrManagement.Response;
 using HRManagement.Domain.Filters;
@@ -20,9 +21,11 @@ namespace HRManagement.Infrastructure.Services
             _jobHistoryRepository = unitOfWork.GetRepository<JobHistory>() as IJobHistoryRepository;
         }
 
-        public IQueryable<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters)
+        public BaseCollectionResponse<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters)
         {
-            return _employeeRepository.PageResult(filters)
+            return new BaseCollectionResponse<EmployeeResponseDTO>()
+            {
+                Items = _employeeRepository.PageResult(filters)
                 .Select(employee => new EmployeeResponseDTO()
                 {
                     Id = employee.Id,
@@ -57,9 +60,9 @@ namespace HRManagement.Infrastructure.Services
                             Code = employee.Job.Title.ToUpper(),
                             Value = employee.Job.Title
                         })
-                        .ToList(),
-                    EmployeesCount = _employeeRepository.GetAllFiltered(filters).Count()
-                });
+                }),
+                Count = _employeeRepository.GetAllFiltered(filters).Count()
+            };
         }
 
         public EmployeeResponseDTO Get(int id)
@@ -100,7 +103,6 @@ namespace HRManagement.Infrastructure.Services
                         Code = employee.Job.Title.ToUpper(),
                         Value = employee.Job.Title
                     })
-                    .ToList()
                 })
                 .First();
         }
