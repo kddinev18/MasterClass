@@ -116,7 +116,7 @@ export class EmployeeDialogComponent implements OnInit, OnDestroy {
             });
           }
 
-          this.dialogRef.close(true);
+          this.dialogRef.close({ reload: true, managerId: this.employeeForm.value.managerId });
         }
       });
     }

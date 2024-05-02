@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
@@ -50,19 +50,21 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.css'
 })
-export class EmployeesComponent implements OnInit, OnDestroy {
+export class EmployeesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   initialFilter: BaseFilterModel<EmployeeFilterModel> = {
     page: 1,
-    pageSize: 10
+    pageSize: 5
   };
 
   filters: BaseFilterModel<EmployeeFilterModel>[] = [];
   jobs: NomenclatureModel[] = [];
   managers: NomenclatureModel[] = [];
   departments: NomenclatureModel[] = [];
+  count: number = 0;
+  filterValue: EmployeeFilterModel | undefined = undefined;
 
   displayedColumns: string[] = [
     'firstName',
@@ -86,7 +88,9 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar,
     private _nomenclatureService: NomenclatureService,
     private _employeeService: EmployeesService
-  ) { }
+  ) {
+    this.dataSource = new MatTableDataSource<EmployeeModel>();
+  }
 
   ngOnInit(): void {
     forkJoin([
@@ -104,6 +108,11 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     this.fetchData();
   }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
   add(): void {
     const dialog = this._dialog.open(EmployeeDialogComponent, {
       width: '600px',
@@ -115,8 +124,15 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
     dialog.afterClosed().pipe(takeUntil(this._unsubscribeAll)).subscribe({
       next: (result) => {
-        if (result) {
+        debugger
+        if (result?.reload) {
           this.fetchData();
+
+          if (result.managerId) {
+            this._nomenclatureService.getManagers().pipe(takeUntil(this._unsubscribeAll)).subscribe(managers => {
+              this.managers = managers;
+            });
+          }
         }
       }
     });
@@ -208,19 +224,44 @@ export class EmployeesComponent implements OnInit, OnDestroy {
   }
 
   applyFilter(value: any) {
+    if (value.hireDate) {
+      const localDate = new Date(value.hireDate.getFullYear(), value.hireDate.getMonth(), value.hireDate.getDate(), value.hireDate.getHours() + 3);
+      value.hireDate = localDate.toISOString();
+    }
+
+    this.filterValue = value;
     const filter: BaseFilterModel<EmployeeFilterModel> = {
       ...this.initialFilter,
-      filters: value
+      filters: this.filterValue
+    };
+
+    this.fetchData(filter);
+  }
+
+  resetFilter(event: any) {
+    this.filterValue = undefined;
+    
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
+
+    this.fetchData();
+  }
+
+  changePage(event: PageEvent) {
+    const filter: BaseFilterModel<EmployeeFilterModel> = {
+      page: event.pageIndex + 1,
+      pageSize: event.pageSize,
+      filters: this.filterValue
     };
 
     this.fetchData(filter);
   }
   
   private fetchData(filter = this.initialFilter): void {
-    this._employeeService.getAllEmployees(filter).pipe(takeUntil(this._unsubscribeAll)).subscribe(employees => {
-      this.dataSource = new MatTableDataSource(employees);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+    this._employeeService.getAllEmployees(filter).pipe(takeUntil(this._unsubscribeAll)).subscribe(data => {
+      this.dataSource = new MatTableDataSource(data.items);
+      this.count = data.count;
     });
   }
 

@@ -23,6 +23,8 @@ export class FiltersComponent implements OnInit {
 
   @Output() formSubmit: EventEmitter<any> = new EventEmitter<any>();
 
+  @Output() onFilterReset: EventEmitter<any> = new EventEmitter<any>();
+
   @ContentChild('filterTemplate')
   filterTemplate!: TemplateRef<any>;
 
@@ -43,7 +45,7 @@ export class FiltersComponent implements OnInit {
 
   reset(): void {
     this.filtersFormGroup.reset();
-    this.formSubmit.emit(null);
+    this.onFilterReset.emit(null);
   }
 
   submit(): void {
