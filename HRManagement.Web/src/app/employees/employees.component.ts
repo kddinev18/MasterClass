@@ -154,15 +154,8 @@ export class EmployeesComponent implements OnInit, AfterViewInit, OnDestroy {
           newDepartmentId: promoteRes.newDepartmentId
         } as EmployeePromoteModel;
 
-        this._employeeService.promote(promoteModel).pipe(takeUntil(this._unsubscribeAll)).subscribe({
-          next: () => {
-            this._snackbar.open('Employee has been promoted', undefined, {
-              duration: 4000
-            });
-
-            this.fetchData();
-          }
-        });
+        // You should pass the newly created promoteModel to the service method to promote the employee
+        
       }
     });
   }

@@ -34,9 +34,7 @@ export class EmployeesService extends CrudService<EmployeeModel> {
     return this.httpClient.post<number>(`${this.APIUrl}/AddOrUpdate`, employee);
   }
 
-  promote(promote: EmployeePromoteModel): Observable<number> {
-    return this.httpClient.post<number>(`${this.APIUrl}/PromoteEmployee`, promote);
-  }
+  // Implement method to promote employee
 
   override getResourceUrl(): string {
       return 'HrManagement/Employee';
