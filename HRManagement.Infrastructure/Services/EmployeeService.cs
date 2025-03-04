@@ -138,5 +138,29 @@ namespace HRManagement.Infrastructure.Services
         {
             return _employeeRepository.Delete(id, _currentUserService.User);
         }
+
+        public int Promote(PromoteEmployeeDTO promote)
+        {
+            JobHistory oldJob = _jobHistoryRepository.GetAll()
+                .Where(job => job.EmployeeId == promote.EmployeeId && !job.EndDate.HasValue)
+                .First();
+            oldJob.EndDate = DateTime.Now;
+            _jobHistoryRepository.AddOrUpdate(oldJob, _currentUserService.User);
+
+            _jobHistoryRepository.AddOrUpdate(new JobHistory()
+            {
+                EmployeeId = promote.EmployeeId,
+                JobId = promote.NewJobId,
+                StartDate = DateTime.Now,
+                DepartmentId = promote.NewDepartmentId.HasValue ? promote.NewDepartmentId.Value : oldJob.DepartmentId,
+                EndDate = null
+            }, _currentUserService.User);
+
+            Employee dbEmployee = _employeeRepository.GetById(promote.EmployeeId).First();
+            dbEmployee.JobId = promote.NewJobId;
+            dbEmployee.DepartmentId = promote.NewDepartmentId.HasValue ? promote.NewDepartmentId.Value : oldJob.DepartmentId;
+
+            return _employeeRepository.AddOrUpdate(dbEmployee, _currentUserService.User);
+        }
     }
 }

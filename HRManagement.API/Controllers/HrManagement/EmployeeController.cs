@@ -47,7 +47,7 @@ namespace HRManagement.API.Controllers.HrManagement
         [HttpPost]
         public IActionResult PromoteEmployee([FromBody] PromoteEmployeeDTO promote)
         {
-            throw new System.NotImplementedException();
+            return Ok(_employeeService.Promote(promote));
         }
     }
 }

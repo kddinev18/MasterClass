@@ -12,5 +12,6 @@ namespace HRManagement.Infrastructure.Contracts
         int Delete(int id);
         EmployeeResponseDTO Get(int id);
         BaseCollectionResponse<EmployeeResponseDTO> GetAll(BaseFilter<EmployeeFilters> filters);
+        int Promote(PromoteEmployeeDTO promote);
     }
 }

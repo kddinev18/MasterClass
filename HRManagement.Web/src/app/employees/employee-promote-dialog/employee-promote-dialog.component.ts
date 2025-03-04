@@ -50,15 +50,31 @@ export class EmployeePromoteDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    // Initialize the form here
+    this.employeePromoteForm = this._fb.group({
+      newJobId: [null, Validators.required],
+      newDepartmentId: [null]
+    });
 
-    // Here you should load all jobs and departments
-    
     this.id = this.data.id;
+
+    forkJoin([
+      this._nomenclatureService.getJobs(),
+      this._nomenclatureService.getDepartments()
+    ])
+    .pipe(takeUntil(this._unsubscribeAll))
+    .subscribe(([jobs, departments]) => {
+      this.jobs = jobs;
+      this.departments = departments;
+    });
   }
 
   onSubmit(): void {
-
+    if (this.employeePromoteForm.valid) {
+      this.dialogRef.close({
+        ...this.employeePromoteForm.value,
+        employeeId: this.id
+      });
+    }
   }
 
   ngOnDestroy(): void {
